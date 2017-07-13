@@ -10,7 +10,10 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
+this will install Tensorflow and Keras (amongst other things), so it may take slightly longer than usual.
+
 With the environment active, view the notebook by launching the jupyter server
 
 ```jupyter notebook```
 
+The code will need to download several files of order ~100MB when being first run, but will cache them for future execution.
