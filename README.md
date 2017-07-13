@@ -13,6 +13,11 @@ pip install -r requirements.txt
 
 this will install Tensorflow and Keras (amongst other things), so it may take slightly longer than usual.
 
+Link to the image data in the dropbox:
+```
+ln -s ~/Dropbox\ \(Datascope\ Analytics\)/DeepProduct/Data/ Data
+```
+
 With the environment active, view the notebook by launching the jupyter server
 
 ```jupyter notebook```
