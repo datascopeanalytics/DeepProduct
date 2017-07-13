@@ -5,7 +5,8 @@
 
 To get started, make sure you're using Python 3 and then create an environment using something like
 
-```virtualenv env
+```
+virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
 ```
