@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
 	render_template
@@ -62,4 +63,12 @@ def initdb_command():
 
 @app.route('/')
 def home():
-	return render_template('base.html')
+	OPEN_IMG_COUCHES = 'Data/OpenImages/Couch'
+	couches = np.random.choice(os.listdir(OPEN_IMG_COUCHES), size = 6, replace = False)
+	couches = [os.path.join(OPEN_IMG_COUCHES,v) for v in couches]
+	data = {}
+	for i, couch in enumerate(couches):
+		data[i] = couch
+	return render_template('index.html', data = data)
+
+
