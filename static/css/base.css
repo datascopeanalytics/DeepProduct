@@ -1,0 +1,16 @@
+#main {
+  min-height: 80vh; }
+
+  .navbar.navbar-default {
+    font-size: 2em;
+    color: black; }
+    .navbar.navbar-default {
+      height: 1em;
+      display: inline-block; }
+
+footer.footer img {
+  height: 1em; }
+
+body {
+  width: 100%;
+}
