@@ -1,9 +1,10 @@
 import os
+import shutil
 import sqlite3
 import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template
+	render_template, send_from_directory
 
 
 app = Flask(__name__)
@@ -13,9 +14,13 @@ app.config.from_object(__name__) # get config settings from this file
 ############	QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##########################
 '''Allows app to recognize a sqlite database couch_tinder.db, should we need it.  
 Working idea is that this might be updated every time someone "swipes right" on
- a couch pair one of our models suggests.  Could also be used to load pairs
- to populate the pages'''
-new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db')}
+ a couch pair one of our models suggests.
+
+UPLOAD FOLDER is what allows for random loading of couches on the index
+ '''
+new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
+			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch'
+			  }
 app.config.update(new_config)
 
 '''Silent will ignore this if FLASKR_SETTINGS is not present'''
@@ -62,13 +67,19 @@ def initdb_command():
 ############	END QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##################
 
 @app.route('/')
-def home():
-	OPEN_IMG_COUCHES = 'Data/OpenImages/Couch'
-	couches = np.random.choice(os.listdir(OPEN_IMG_COUCHES), size = 6, replace = False)
-	couches = [os.path.join(OPEN_IMG_COUCHES,v) for v in couches]
+def home(n_jpgs = 4):
+	src_dir = app.config['INDEX_UPLOAD_FOLDER']
+	dest_dir = 'static/img'
+	sampled = np.random.choice(os.listdir(src_dir), size = n_jpgs, replace = False)
 	data = {}
-	for i, couch in enumerate(couches):
-		data[i] = couch
+	for i, jpg in enumerate(sampled):
+		jpg_path = os.path.join(src_dir, jpg)
+		shutil.copy(jpg_path, dest_dir)
+		copied_name_cur = os.path.join(dest_dir, jpg)
+		copied_name_new = os.path.join(dest_dir, 'index_{}.png'.format(i))
+		os.rename(copied_name_cur, copied_name_new)
+		data[i] = '/'.join(copied_name_new.split('/')[1:])
 	return render_template('index.html', data = data)
+
 
 

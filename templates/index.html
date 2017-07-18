@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block css %}
+{{ super() }}
+<!--link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"-->
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %}
+
+{% block main %}
+{{ super() }}
+<div class="container">
+  <div class="row">
+     {% for key in data.keys() %} 
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=224px height=224px
+           class="thumbnail" src="{{ url_for('static', filename=data[key]) }}">
+        </div>
+      </div>
+    </a></div> <!-- .col-md-4 -->
+     {% endfor %} 
+  </div>
+</div>
+{% endblock main %}
