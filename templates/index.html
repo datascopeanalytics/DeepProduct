@@ -17,16 +17,19 @@
     </div>
   </div>
   <div class="row">
-     {% for key in data.keys() %} 
-    <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <img width=224px height=224px
-           class="thumbnail" src="{{ url_for('static', filename=data[key]) }}">
+    {% for key in data.keys() %} 
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <img width=224px height=224px
+             class="thumbnail" src="{{ url_for('static', filename=data[key]) }}">
+          </div>
         </div>
-      </div>
-    </a></div> <!-- .col-md-4 -->
-     {% endfor %} 
+      </div> 
+    {% endfor %}
+<!--     <div class="row">
+      <div class="col-md-4 col-md-offset-4"> --><!--ADD BUTTON LINKING TO TINDER PAGE-->
+
   </div>
 </div>
 {% endblock main %}
