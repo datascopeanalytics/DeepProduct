@@ -90,3 +90,5 @@ ENV/
 
 # Directory containing data
 Data
+
+.DS_Store
