@@ -6,7 +6,7 @@
 
     {% block css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <!--link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}"-->
     {% endblock css %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -26,7 +26,7 @@
             <div class="container-fluid">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="{{ url_for('home') }}">
-                        <strong>Couch Tinder</strong>
+                        <strong>COUCH TINDER</strong>
                     </a>
                 </div>
                 <div class="collapse navbar-collapse">
@@ -69,7 +69,8 @@
                             design and analysis by
                         </p>
                         <a class="navbar-brand" href="http://datascopeanalytics.com">
-                            <img alt="Datascope" src="{{ url_for('static', filename='img/datascope-logo.png') }}">
+                            <img style='height: 1em;' alt="Datascope" 
+                            src="{{ url_for('static', filename='img/datascope-logo.png') }}">
                         </a>
                     </div>
                 </div>
