@@ -81,5 +81,26 @@ def home(n_jpgs = 4):
 		data[i] = '/'.join(copied_name_new.split('/')[1:])
 	return render_template('index.html', data = data)
 
+@app.route('/models')
+def models():
+
+	model_name = request.args.get('model_name')
+	pair_name = request.args.get('pair_name')
+
+	if not model_name:
+		model_name = 'CNN1'
+	if not pair_name:
+		pair_name = 'pair1'
+
+	data = {'model_name':model_name,
+	        'pair_name':pair_name,
+	        'image_1_path':f'models/{model_name}/pairs/{pair_name}/img1.jpg',
+	        'image_2_path':f'models/{model_name}/pairs/{pair_name}/img2.jpg'
+	        }
+
+	return render_template('models.html', data = data)
+
+
+
 
 
