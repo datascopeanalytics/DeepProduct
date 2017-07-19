@@ -18,7 +18,7 @@ Working idea is that this might be updated every time someone "swipes right" on
 UPLOAD FOLDER is what allows for random loading of couches on the index
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
-			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch',
+			  'INDEX_UPLOAD_FOLDER': 'static/to_dropbox/OpenImages/Couch',
 			  'SECRET_KEY': 'blue; no, yellow!',
 			  'MODELS': [f'CNN{i}' for i in range(1,4)],
 			  'PAIRS':[f'pair{i}' for i in range(1,11)]
@@ -71,14 +71,11 @@ def initdb_command():
 @app.route('/')
 def home(n_jpgs = 4):
 	src_dir = app.config['INDEX_UPLOAD_FOLDER']
-	dest_dir = 'static/img'
 	sampled = np.random.choice(os.listdir(src_dir), size = n_jpgs, replace = False)
 	data = {}
 	for i, jpg in enumerate(sampled):
 		jpg_path = os.path.join(src_dir, jpg)
-		dest_path = os.path.join(dest_dir, f'index_{i}')
-		shutil.copyfile(jpg_path, dest_path)
-		data[i] = '/'.join(dest_path.split('/')[1:])
+		data[i] = '/'.join(jpg_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
 # @app.context_processor
