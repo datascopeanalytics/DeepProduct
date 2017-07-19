@@ -79,16 +79,19 @@ def home(n_jpgs = 4):
 		data[i] = '/'.join(dest_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
+@app.route('/models')
 @app.route('/models/<model_name>/<pair_name>/')
-def models(model_name, pair_name):
+def models(model_name = None, pair_name = None):
 
-	# model_name = request.args.get('model_name')
-	# pair_name = request.args.get('pair_name')
+	#For now, routing to models without specifying a model and
+	# pair just bounces you back home.
+	if not model_name and not pair_name:
+		return redirect(url_for('home'))
 
-	# # if not model_name and not request.args.get('model_name'):
-	# # 	model_name = 'CNN1'
-	# # if not pair_name and not request.args.get('pair_name'):
-	# # 	pair_name = 'pair1'
+	# if not model_name and not request.args.get('model_name'):
+	# 	model_name = 'CNN1'
+	# if not pair_name and not request.args.get('pair_name'):
+	# 	pair_name = 'pair1'
 
 	data = {'model_name':model_name,
 	        'pair_name':pair_name,
