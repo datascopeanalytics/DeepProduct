@@ -55,10 +55,14 @@
             </div>
         </nav>
         {% endblock nav %}
+        {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+        {% endfor %}
         <div id="main">
             {% block main %}
             {% endblock main %}
         </div>
+
         {% block footer %}
         <footer class="footer">
             <nav class="navbar navbar-default">
@@ -70,7 +74,7 @@
                             design and analysis by
                         </p>
                         <a class="navbar-brand" href="http://datascopeanalytics.com">
-                            <img style='height: 1em;' alt="Datascope" 
+                            <img style='height: 1em;' alt="Datascope"
                             src="{{ url_for('static', filename='img/datascope-logo.png') }}">
                         </a>
                     </div>

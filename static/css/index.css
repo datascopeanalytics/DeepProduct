@@ -1,9 +1,18 @@
 #main {
   min-height: 80vh; }
 
+.my-button {
+    // A shitty button
+    font-size: 0.9em;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.flash          { background: #cee5F5; padding: 0.5em;
+                  border: 1px solid #aacbe2; }
 /*  .navbar.navbar-default {
     font-size: 2em;
-    color: black; 
+    color: black;
 	}
     .navbar.navbar-default {
       height: 1em;

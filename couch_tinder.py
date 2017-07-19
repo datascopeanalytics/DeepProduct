@@ -4,22 +4,22 @@ import sqlite3
 import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, send_from_directory
-
+	render_template, send_from_directory, flash
 
 app = Flask(__name__)
 
 app.config.from_object(__name__) # get config settings from this file
 
 ############	QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##########################
-'''Allows app to recognize a sqlite database couch_tinder.db, should we need it.  
+'''Allows app to recognize a sqlite database couch_tinder.db, should we need it.
 Working idea is that this might be updated every time someone "swipes right" on
  a couch pair one of our models suggests.
 
 UPLOAD FOLDER is what allows for random loading of couches on the index
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
-			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch'
+			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch',
+			  'SECRET_KEY': 'blue; no, yellow!'
 			  }
 app.config.update(new_config)
 
@@ -53,7 +53,7 @@ def init_db():
 		db.cursor().executescript(f.read())
 	db.commit()
 
-'''The command line decorator creates a new command with 
+'''The command line decorator creates a new command with
 the flask script.  Running flask initdb will wipe whatever
 exists in 'couch_tinder.db' and redefine it according to
 schema.sql
@@ -100,7 +100,15 @@ def models():
 
 	return render_template('models.html', data = data)
 
-
-
-
-
+@app.route('/judgement', methods=['POST'])
+def judgement():
+	if request.method == 'POST':
+		print(request.form)
+		print(request.form['match'])
+		if 'flag' in request.form and request.form['flag']:
+			flash('You flagged this one, yo')
+		if request.form['match'] == 'Match!':
+			flash('You totally judged that couch matched')
+		else:
+			flash("You said those didn't match")
+	return redirect(url_for('models'))
