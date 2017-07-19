@@ -18,7 +18,7 @@ Working idea is that this might be updated every time someone "swipes right" on
 UPLOAD FOLDER is what allows for random loading of couches on the index
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
-			  'INDEX_UPLOAD_FOLDER': 'static/to_dropbox/OpenImages/Couch',
+			  'INDEX_UPLOAD_FOLDER': 'static/to_dropbox/DeepFashion/img/1981_Graphic_Ringer_Tee',
 			  'SECRET_KEY': 'blue; no, yellow!',
 			  'MODELS': [f'CNN{i}' for i in range(1,4)],
 			  'PAIRS':[f'pair{i}' for i in range(1,11)]
@@ -77,9 +77,6 @@ def home(n_jpgs = 4):
 		jpg_path = os.path.join(src_dir, jpg)
 		data[i] = '/'.join(jpg_path.split('/')[1:])
 	return render_template('index.html', data = data)
-
-# @app.context_processor
-
 
 
 @app.route('/models/', defaults = {'model_name':None, 'pair_name':None})
