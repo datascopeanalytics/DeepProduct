@@ -90,3 +90,4 @@ ENV/
 
 # Directory containing data
 Data
+static/to_dropbox
