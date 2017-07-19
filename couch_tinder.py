@@ -76,22 +76,19 @@ def home(n_jpgs = 4):
 		jpg_path = os.path.join(src_dir, jpg)
 		dest_path = os.path.join(dest_dir, f'index_{i}')
 		shutil.copyfile(jpg_path, dest_path)
-		# copied_name_cur = os.path.join(dest_dir, jpg)
-		# copied_name_new = os.path.join(dest_dir, 'index_{}.png'.format(i))
-		# os.rename(copied_name_cur, copied_name_new)
 		data[i] = '/'.join(dest_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
-@app.route('/models')
-def models():
+@app.route('/models/<model_name>/<pair_name>/')
+def models(model_name, pair_name):
 
-	model_name = request.args.get('model_name')
-	pair_name = request.args.get('pair_name')
+	# model_name = request.args.get('model_name')
+	# pair_name = request.args.get('pair_name')
 
-	if not model_name:
-		model_name = 'CNN1'
-	if not pair_name:
-		pair_name = 'pair1'
+	# # if not model_name and not request.args.get('model_name'):
+	# # 	model_name = 'CNN1'
+	# # if not pair_name and not request.args.get('pair_name'):
+	# # 	pair_name = 'pair1'
 
 	data = {'model_name':model_name,
 	        'pair_name':pair_name,
