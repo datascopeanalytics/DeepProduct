@@ -19,7 +19,9 @@ UPLOAD FOLDER is what allows for random loading of couches on the index
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
 			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch',
-			  'SECRET_KEY': 'blue; no, yellow!'
+			  'SECRET_KEY': 'blue; no, yellow!',
+			  'MODELS': [f'CNN{i}' for i in range(1,4)],
+			  'PAIRS':[f'pair{i}' for i in range(1,11)]
 			  }
 app.config.update(new_config)
 
@@ -79,19 +81,20 @@ def home(n_jpgs = 4):
 		data[i] = '/'.join(dest_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
-@app.route('/models')
+# @app.context_processor
+
+
+
+@app.route('/models/', defaults = {'model_name':None, 'pair_name':None})
 @app.route('/models/<model_name>/<pair_name>/')
 def models(model_name = None, pair_name = None):
 
-	#For now, routing to models without specifying a model and
-	# pair just bounces you back home.
+	# For now, routing to models without specifying a model and
+	# pair dumps you back home instead...
 	if not model_name and not pair_name:
-		return redirect(url_for('home'))
-
-	# if not model_name and not request.args.get('model_name'):
-	# 	model_name = 'CNN1'
-	# if not pair_name and not request.args.get('pair_name'):
-	# 	pair_name = 'pair1'
+		model_name = np.random.choice(app.config['MODELS'],1).item()
+		pair_name = np.random.choice(app.config['PAIRS'], 1).item()
+		return redirect(url_for('models', model_name = model_name, pair_name = pair_name))
 
 	data = {'model_name':model_name,
 	        'pair_name':pair_name,
