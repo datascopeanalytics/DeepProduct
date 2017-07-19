@@ -74,11 +74,12 @@ def home(n_jpgs = 4):
 	data = {}
 	for i, jpg in enumerate(sampled):
 		jpg_path = os.path.join(src_dir, jpg)
-		shutil.copy(jpg_path, dest_dir)
-		copied_name_cur = os.path.join(dest_dir, jpg)
-		copied_name_new = os.path.join(dest_dir, 'index_{}.png'.format(i))
-		os.rename(copied_name_cur, copied_name_new)
-		data[i] = '/'.join(copied_name_new.split('/')[1:])
+		dest_path = os.path.join(dest_dir, f'index_{i}')
+		shutil.copyfile(jpg_path, dest_path)
+		# copied_name_cur = os.path.join(dest_dir, jpg)
+		# copied_name_new = os.path.join(dest_dir, 'index_{}.png'.format(i))
+		# os.rename(copied_name_cur, copied_name_new)
+		data[i] = '/'.join(dest_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
 @app.route('/models')
