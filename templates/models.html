@@ -32,29 +32,23 @@
 
   </div>
 
-  <form action="{{ url_for('judgement') }}" method=post class=my-button>
+  <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
     <dl>
-      <dd><input type=submit name='match' value='Match!'>
-      <dd><input type=submit name='match' value='No match'>
+      <dd><input id=match type=submit name='match' value='Match!'>
+      <dd><input id=nomatch type=submit name='match' value='No match'>
       <dd><input type=checkbox name='flag'>
     </dl>
   </form>
   <script type='text/javascript'>
-    function arrowPressed(matchvar) {
-      console.log(matchvar)
-      $.post( "/judgement", {
-          match: matchvar
-      });
-    }
 
     document.onkeydown = function(evt) {
       evt = evt || window.event;
       switch (evt.keyCode) {
         case 37:
-          arrowPressed('No match');
+          $('#myform #nomatch').click();
           break;
         case 39:
-          arrowPressed('Match!');
+          $('#myform #match').click();
           break;
       }
     };
