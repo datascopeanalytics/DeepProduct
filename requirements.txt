@@ -12,4 +12,6 @@ six==1.10.0
 tensorflow==1.2.1
 Theano==0.9.0
 Werkzeug==0.12.2
+pandas
 flask
+Pillow

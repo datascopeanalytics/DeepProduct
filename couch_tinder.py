@@ -18,8 +18,10 @@ Working idea is that this might be updated every time someone "swipes right" on
 UPLOAD FOLDER is what allows for random loading of couches on the index
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
-			  'INDEX_UPLOAD_FOLDER': 'Data/OpenImages/Couch',
-			  'SECRET_KEY': 'blue; no, yellow!'
+			  'INDEX_UPLOAD_FOLDER': 'static/to_dropbox/DeepFashion/img/1981_Graphic_Ringer_Tee',
+			  'SECRET_KEY': 'blue; no, yellow!',
+			  'MODELS': [f'CNN{i}' for i in range(1,4)],
+			  'PAIRS':[f'pair{i}' for i in range(1,11)]
 			  }
 app.config.update(new_config)
 
@@ -69,28 +71,24 @@ def initdb_command():
 @app.route('/')
 def home(n_jpgs = 4):
 	src_dir = app.config['INDEX_UPLOAD_FOLDER']
-	dest_dir = 'static/img'
 	sampled = np.random.choice(os.listdir(src_dir), size = n_jpgs, replace = False)
 	data = {}
 	for i, jpg in enumerate(sampled):
 		jpg_path = os.path.join(src_dir, jpg)
-		shutil.copy(jpg_path, dest_dir)
-		copied_name_cur = os.path.join(dest_dir, jpg)
-		copied_name_new = os.path.join(dest_dir, 'index_{}.png'.format(i))
-		os.rename(copied_name_cur, copied_name_new)
-		data[i] = '/'.join(copied_name_new.split('/')[1:])
+		data[i] = '/'.join(jpg_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
-@app.route('/models')
-def models():
-	print('rendering')
-	model_name = request.args.get('model_name')
-	pair_name = request.args.get('pair_name')
 
-	if not model_name:
-		model_name = 'CNN1'
-	if not pair_name:
-		pair_name = 'pair1'
+@app.route('/models/', defaults = {'model_name':None, 'pair_name':None})
+@app.route('/models/<model_name>/<pair_name>/')
+def models(model_name = None, pair_name = None):
+
+	# For now, routing to models without specifying a model and
+	# pair dumps you back home instead...
+	if not model_name and not pair_name:
+		model_name = np.random.choice(app.config['MODELS'],1).item()
+		pair_name = np.random.choice(app.config['PAIRS'], 1).item()
+		return redirect(url_for('models', model_name = model_name, pair_name = pair_name))
 
 	data = {'model_name':model_name,
 	        'pair_name':pair_name,
