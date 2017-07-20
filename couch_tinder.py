@@ -4,7 +4,7 @@ import sqlite3
 import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, send_from_directory, flash, current_app
+	render_template, send_from_directory, flash
 
 app = Flask(__name__)
 
@@ -64,18 +64,6 @@ def initdb_command():
 	init_db()
 	print('Initialized the database')
 
-'''Assuming we have information to the effect of "this model
-recommended that these images go together" in some source 
-text file, this makes sure that the current application
-context has a representation of those pairs
-'''
-def access_model_pairs():
-	if not hasattr(g, 'model_pairs'):
-		with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
-			g.model_pairs = f.readlines()
-	return g.model_pairs
-
-
 ############	END QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##################
 
 @app.route('/')
@@ -90,25 +78,25 @@ def home(n_jpgs = 4):
 	return render_template('index.html', data = data)
 
 
-@app.route('/models', defaults = {'served_pair':None})
-# If we're always going to be choosing randomly, not sure
-# if this defaults option is even necessary
-def models(served_pair = None):
-
-	if not served_pair:
-		all_pairs = access_model_pairs()
-		served_pair = np.random.choice(all_pairs, 1).item()
-		# FIX THIS STUFF.....
-		pair_model = served_pair.split()[0]
-		pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[1])
-		pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[2])
-		#return redirect(url_for('models', model_name = model_name, pair_name = pair_name))
+@app.route('/models')
+'''Assuming that we always want to route back to a random page in our A/B
+testing, this should work. Every time a request is made, we open up our
+reference text file, choose a random row, split it into its constituent
+parts (first element = model, second element = first_image), and then
+serves those on the very same couch tinder layout we had before.
+'''
+def models():
+	with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
+		all_pairs = f.readlines()
+		served_pair = np.random.choice(all_pairs,1).item()
+	pair_model = served_pair.split()[0]
+	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[1])
+	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[2])
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
 	        'image_2_path':'/'.join(pair_img_2.split('/')[1:])
 	        }
-
 	return render_template('models.html', data = data)
 
 @app.route('/judgement', methods=['POST'])
@@ -121,11 +109,7 @@ def judgement():
 		if request.form['match'] == 'Match!':
 			flash('You totally judged that couch matched')
 		else:
+			print('no match you moron')
 			flash("You said those didn't match")
 	return redirect(url_for('models'))
 
-# if __name__ == '__main__':
-# 	with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
-# 		model_pairs = f.readlines()
-# 		import pdb
-# 		pdb.set_trace()
