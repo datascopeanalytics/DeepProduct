@@ -83,7 +83,7 @@ def home(n_jpgs = 4):
 
 @app.route('/models')
 def models():
-
+	print('rendering')
 	model_name = request.args.get('model_name')
 	pair_name = request.args.get('pair_name')
 
