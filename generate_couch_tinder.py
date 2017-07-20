@@ -20,39 +20,45 @@ def create_directories(dirs_to_create, base_dir):
 			continue
 
 def random_image_pair(base_dir):
+	'''
+	Selects two images from a random subdirectory and returns
+	a list of two paths.  These paths are assumed to be
+	appended onto 'DeepFashion/img' and are going to be
+	in the form of SUBDIR_NAME/IMG_NAME.jpg
+
+	Used to create "web_app_AB_pairs.txt", something that
+	will likely be supplanted by a file that Nat provides
+	'''
 	random_subdir = np.random.choice(os.listdir(base_dir),1).item()
 	path_to_subdir = os.path.join(base_dir, random_subdir)
 	img_paths = []
 	for v in np.random.choice(os.listdir(path_to_subdir), 2, replace = False):
-		full_path = os.path.join(path_to_subdir,v)
-		full_path = full_path.replace('Data/','to_dropbox/')
+		full_path = os.path.join(random_subdir,v)
 		img_paths.append(full_path)
 	return img_paths
 
-
-# Populating a directory with pictures we believe to represent pairs
-# Right now these are random...we'll cross the bridge of actually populating
-# the model stuff when we get there
 
 if __name__ =='__main__':
 	
 	IMG_FOLDER = 'Data/DeepFashion/img'
 	MODELS = ['MD1', 'MD2', 'MD3']
-	N_PAIRS = 10
+	N_PAIRS = 50
 
-	with open('foo_baz_pairs.txt','w') as f:
+	'''
+	Just creates "web_app_AB_pairs.txt"
+	to help us scaffold out the application
+	'''
+	with open('web_app_AB_pairs.txt','w') as f:
 		for mdl in MODELS:
 			for pr in range(N_PAIRS):
 				images = random_image_pair(IMG_FOLDER)
 				file_line = f'{mdl}\t{images[0]}\t{images[1]}\n'
 				f.write(file_line)
 
-	import pdb
-	pdb.set_trace()
 
 
 	# Populating a directory with random pictures meant to represent pairs
-	# Now deprecated, I believe
+	# DEPRECATED
 
 	# all_pair_dirs = []
 	# create_directories('models', 'static')
