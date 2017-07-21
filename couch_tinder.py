@@ -64,6 +64,14 @@ def initdb_command():
 	init_db()
 	print('Initialized the database')
 
+def get_AB_testing_pairs():
+	if not hasattr(g, 'AB_testing_pairs'):
+		with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
+			AB_pairs = f.readlines()
+			g.AB_testing_pairs = AB_pairs
+	return g.AB_testing_pairs
+
+
 ############	END QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##################
 
 @app.route('/')
@@ -77,21 +85,19 @@ def home(n_jpgs = 4):
 		data[i] = '/'.join(jpg_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
-
-@app.route('/models')
 '''Assuming that we always want to route back to a random page in our A/B
 testing, this should work. Every time a request is made, we open up our
-reference text file, choose a random row, split it into its constituent
-parts (first element = model, second element = first_image), and then
-serves those on the very same couch tinder layout we had before.
+reference text file, choose a random row, split it into its constituent parts 
+(first element = model, second element = first_image, third_element = second_image)
+and serve those on the very same couch tinder layout we had before.
 '''
+@app.route('/models')
 def models():
-	with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
-		all_pairs = f.readlines()
-		served_pair = np.random.choice(all_pairs,1).item()
-	pair_model = served_pair.split()[0]
-	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[1])
-	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair.split()[2])
+	AB_pairs = get_AB_testing_pairs()
+	served_pair = np.random.choice(AB_pairs,1).item().split()
+	pair_model = served_pair[0]
+	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
+	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
@@ -109,7 +115,6 @@ def judgement():
 		if request.form['match'] == 'Match!':
 			flash('You totally judged that couch matched')
 		else:
-			print('no match you moron')
 			flash("You said those didn't match")
 	return redirect(url_for('models'))
 
