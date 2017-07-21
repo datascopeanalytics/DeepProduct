@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block css %} {{ super() }}
-<!--link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"-->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock css %} {% block view_title %}{% endblock view_title %} {% block main %} {{ super() }}
 
 <div class="container">
@@ -25,18 +25,23 @@
         </div>
       </div>
     </div>
-
-    <!--     <div class="row">
-      <div class="col-md-4 col-md-offset-4"> -->
-    <!--ADD BUTTON LINKING TO TINDER PAGE-->
-
   </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p style='text-align: center'>Swipe left (left arrow key) to say that these two images don't match; swipe right (right arrow key) to say that they do! </p>
 
+      <p style='text-align: center'>Matching is whatever you think it means, babe.</p>
+    </div>
+  </div>
   <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
     <dl>
       <dd><input id=match type=submit name='match' value='Match!'>
       <dd><input id=nomatch type=submit name='match' value='No match'>
-      <dd><input type=checkbox name='flag'>
+      <dd><textarea rows=2 cols=40 name='comment'></textarea>
+      <dt>Leave a comment about this pair of images, if you so desire (e.g. These match sooooo well or What was this machine thinking?!)
+      <dd><input type=hidden name='model' value="{{ data['model_served'] }}">
+      <dd><input type=hidden name='image_1' value="{{ data['image_1_path'] }}">
+      <dd><input type=hidden name='image_2' value="{{ data['image_2_path'] }}">
     </dl>
   </form>
   <script type='text/javascript'>

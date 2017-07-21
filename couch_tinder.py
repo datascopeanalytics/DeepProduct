@@ -110,11 +110,21 @@ def judgement():
 	if request.method == 'POST':
 		print(request.form)
 		print(request.form['match'])
-		if 'flag' in request.form and request.form['flag']:
-			flash('You flagged this one, yo')
+
 		if request.form['match'] == 'Match!':
 			flash('You totally judged that couch matched')
+			matching = 1
 		else:
 			flash("You said those didn't match")
+			matching = 0
+			
+		db = get_db()
+		db.execute('insert into user_feedback (pair_file_1, pair_file_2, model, user_vote, comment) values (?,?,?,?,?)',
+			[request.form['image_1'], 
+			 request.form['image_2'], 
+			 request.form['model'], 
+			 matching, 
+			 request.form['comment']])
+		db.commit()
 	return redirect(url_for('models'))
 
