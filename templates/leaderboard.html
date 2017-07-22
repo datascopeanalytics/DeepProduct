@@ -1,0 +1,62 @@
+{% extends "base.html" %} 
+{% block css %} 
+{{ super() }}
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %} 
+
+{% block main %} 
+{{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px;'>
+      <h2 class="text-center">Public Leaderboard</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <h3 class="text-center">{{ data['model_1_name'] }}</h3>
+    </div>
+
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approval Rate: {:.2f}".format(data['model_1_matches']*100.0/data['model_1_votes']) }}</h3>
+    </div>
+   
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approved {} Times".format(data['model_1_matches']) }}</h3>
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <h3 class="text-center">{{ data['model_2_name'] }}</h3>
+    </div>
+
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approval Rate: {:.2f}".format(data['model_2_matches']*100.0/data['model_2_votes']) }}</h3>
+    </div>
+   
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approved {} Times".format(data['model_2_matches']) }}</h3>
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <h3 class="text-center">{{ data['model_3_name'] }}</h3>
+    </div>
+
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approval Rate: {:.2f}".format(data['model_3_matches']*100.0/data['model_3_votes']) }}</h3>
+    </div>
+    
+    <div class="col-md-4">
+      <h3 class="text-center">{{ "Approved {} Times".format(data['model_3_matches']) }}</h3>
+    </div>
+  </div>
+
+</div>
+
+{% endblock main %} 
