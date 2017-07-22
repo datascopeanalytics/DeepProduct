@@ -7,7 +7,9 @@ import PIL
 from PIL import Image, ImageDraw
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, flash
+	render_template, flash, make_response
+from functools import wraps, update_wrapper
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -131,8 +133,6 @@ def make_bbox_image(txt_file_path, bbox_coords):
 
 #######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
 
-
-
 @app.route('/')
 def home(n_jpgs = 4):
 	src_dir = app.config['DEEP_FASHION_IMAGES']
@@ -166,7 +166,6 @@ def models():
 		bbox_coords = get_bbox_coords(rel_img_path)
 		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
 		bbox_img.save(f'static/img/bbox_img_{i+1}.png')
-
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
@@ -223,6 +222,21 @@ def leaderboard():
 
 	return render_template('leaderboard.html', data = data)
 
+'''One problem with always writing a new image to the same path
+(static/img/bbox_img_1.png, etc) is that the browser will serve
+up the cached page instead of the refreshed, randomized one.
 
+What this last decorator does is essentially disable caching
+after any request is made (max-age=0). This seemed slightly less hacky
+than appending some random hash after the url of the models page.
 
+It also adds headers to both force latest IE rendering engine or Chrome Frame
+
+See: https://stackoverflow.com/questions/13768007/browser-caching-issues-in-flask
+'''
+@app.after_request
+def add_header(response):
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
 
