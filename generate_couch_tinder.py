@@ -42,7 +42,7 @@ def random_number_of_images(base_dir, n_images):
 		img_paths.append(full_path)
 	return img_paths
 
-def gget_bbox_coords(input_image, bbox_file, method = 'pandas'):
+def get_bbox_coords(input_image, bbox_file, method = 'pandas'):
 	'''
 	For now, assumes that you input an image path
 	from within the img directory.  This function
@@ -116,7 +116,7 @@ if __name__ =='__main__':
 	some_random_images = random_number_of_images(IMG_FOLDER, 5)
 	for idx, img in enumerate(some_random_images):
 		print(img)
-		boxy_box = gget_bbox_coords(img, BOUNDING_BOX_FILE, method)
+		boxy_box = get_bbox_coords(img, BOUNDING_BOX_FILE, method)
 		mod_img = make_bbox_image(img, boxy_box)
 		# We can't save these files as JPEGs because of the alpha
 		# channel required to draw the bounding box
