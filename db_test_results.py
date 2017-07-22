@@ -12,9 +12,9 @@ foo.row_factory = sqlite3.Row
 
 # Get number of ratings
 QUERY_STR = '''
-	SELECT COUNT(*)AS n_rows 
-	FROM user_feedback
-	'''
+SELECT COUNT(*)AS n_rows 
+FROM user_feedback
+'''
 
 results = [v for v in foo.execute(QUERY_STR).fetchall()]
 for x in results:
@@ -25,11 +25,11 @@ print()
 # calculate approval rating. This is basically what
 # we would need to populate a "public leaderboard" page
 QUERY_STR = '''
-	SELECT model, SUM(user_vote) AS pos_votes, COUNT(1) AS votes
-	FROM user_feedback 
-	GROUP BY model 
-	ORDER BY pos_votes DESC
- 	'''
+SELECT model, SUM(user_vote) AS pos_votes, COUNT(1) AS votes
+FROM user_feedback 
+GROUP BY model 
+ORDER BY pos_votes DESC
+'''
 results = [v for v in foo.execute(QUERY_STR).fetchall()]
 
 for x in results: 
@@ -41,24 +41,24 @@ for x in results:
 # When you have the top model, get the pair produced by that model
 # that has the highest number of votes
 QUERY_STR = '''
-	SELECT model, pair_file_1, pair_file_2,
-	SUM(user_vote) AS pos_votes, COUNT(1) AS votes
-	FROM user_feedback
-	WHERE model = 
+SELECT model, pair_file_1, pair_file_2,
+SUM(user_vote) AS pos_votes, COUNT(1) AS votes
+FROM user_feedback
+WHERE model = 
+	(
+	SELECT model
+	FROM
 		(
-		SELECT model
-		FROM
-			(
-			SELECT model, SUM(user_vote) as pos_votes
-			FROM user_feedback
-			GROUP BY model
-			)
-		AS T1
-		ORDER BY pos_votes DESC LIMIT 1
+		SELECT model, SUM(user_vote) as pos_votes
+		FROM user_feedback
+		GROUP BY model
 		)
-	GROUP BY model, pair_file_1, pair_file_2
+	AS T1
 	ORDER BY pos_votes DESC LIMIT 1
-	'''
+	)
+GROUP BY model, pair_file_1, pair_file_2
+ORDER BY pos_votes DESC LIMIT 1
+'''
 
 results = [v for v in foo.execute(QUERY_STR).fetchall()]
 for x in results: 
@@ -70,16 +70,16 @@ for x in results:
 
 # Quick test to see how flexible  sqlite is
 QUERY_STR = '''
-	SELECT 
-		CASE 
-			WHEN comment == '' 
-			THEN 'dont_have'
-			ELSE 'have'
-		END has_comment, COUNT(1) as tally
-	FROM user_feedback
-	GROUP BY has_comment
-	ORDER BY tally desc
-	'''
+SELECT 
+	CASE 
+		WHEN comment == '' 
+		THEN 'dont_have'
+		ELSE 'have'
+	END has_comment, COUNT(1) as tally
+FROM user_feedback
+GROUP BY has_comment
+ORDER BY tally desc
+'''
 
 results = [v for v in foo.execute(QUERY_STR).fetchall()]
 for x in results: 

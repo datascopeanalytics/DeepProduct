@@ -89,7 +89,7 @@ def make_bbox_image(input_image, bbox_coords):
 if __name__ =='__main__':
 	
 	IMG_FOLDER = 'Data/DeepFashion/img'
-	method = 'kitten'	
+	method = 'kitties'	
 
 
 	# Loading this once as a data frame will prevent us from having to

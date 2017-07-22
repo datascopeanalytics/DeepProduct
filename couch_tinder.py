@@ -4,18 +4,22 @@ import sqlite3
 import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, send_from_directory, flash
+	render_template, flash
 
 app = Flask(__name__)
 
 app.config.from_object(__name__) # get config settings from this file
 
-############	QUESTIONABLY USEFUL DATABASE FUNCTIONS 	 ##########################
-'''Allows app to recognize a sqlite database couch_tinder.db, should we need it.
-Working idea is that this might be updated every time someone "swipes right" on
- a couch pair one of our models suggests.
+#######################	 CONFIG STUFF 	#############################
+'''DATABASE: This database stores the results of any person's left or 
+right swipes on various image pairs, along with any 
 
-UPLOAD FOLDER is what allows for random loading of couches on the index
+DEEP_FASHION_IMAGES: assumes that anytime we need to access a 
+particular image, we'll always just be looking in one of the many 
+subfolders is that directory. All image references can be passed in relative 
+to this particular path
+
+BOUNDING_BOX_FILE
  '''
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/img/',
@@ -119,12 +123,40 @@ def judgement():
 			matching = 0
 			
 		db = get_db()
-		db.execute('insert into user_feedback (pair_file_1, pair_file_2, model, user_vote, comment) values (?,?,?,?,?)',
-			[request.form['image_1'], 
-			 request.form['image_2'], 
-			 request.form['model'], 
-			 matching, 
-			 request.form['comment']])
+		INSERT_QUERY = '''
+		INSERT INTO user_feedback
+		(pair_file_1, pair_file_2, model, user_vote, comment)
+		VALUES (?,?,?,?,?)
+		'''
+		INSERT_DATA = [request.form['image_1'], 
+			 		   request.form['image_2'], 
+			 		   request.form['model'], 
+			 		   matching, 
+			 		   request.form['comment']]
+		db.execute(INSERT_QUERY,INSERT_DATA)
 		db.commit()
 	return redirect(url_for('models'))
+
+@app.route('/leaderboard')
+def leaderboard():
+	db = get_db()
+	LEAD_QUERY = '''
+	SELECT model, SUM(user_vote) AS pos_votes, COUNT(1) AS votes
+	FROM user_feedback 
+	GROUP BY model 
+	ORDER BY pos_votes DESC
+	'''
+	ranked_models = [row for row in db.execute(LEAD_QUERY).fetchall()]
+	data = {}
+	for rank, result in enumerate(ranked_models):
+		name_key = f'model_{rank+1}_name'
+		data[name_key] = result['model']
+		vote_key = f'model_{rank+1}_votes'
+		data[vote_key] = result['votes']
+		match_key = f'model_{rank+1}_matches'
+		data[match_key] = result['pos_votes']
+	return render_template('leaderboard.html', data = data)
+
+
+
 
