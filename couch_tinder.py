@@ -210,6 +210,7 @@ def leaderboard():
 	GROUP BY model 
 	ORDER BY pos_votes DESC
 	'''
+
 	ranked_models = [row for row in db.execute(LEAD_QUERY).fetchall()]
 	data = {}
 	data['model_indices'] = [i+1 for i in range(len(ranked_models))]
@@ -224,17 +225,31 @@ def leaderboard():
 		rank_dict[match_key] = result['pos_votes']
 		data[rank_val] = rank_dict
 
+	BEST_PAIR_QUERY = '''
+	SELECT model, pair_file_1, pair_file_2,
+	SUM(user_vote) AS pos_votes, COUNT(1) AS votes
+	FROM user_feedback
+	WHERE model = {}
+	GROUP BY model, pair_file_1, pair_file_2
+	ORDER BY pos_votes DESC LIMIT 1
+	'''.format(data[1]['model_name'])
+
+	best_pair = [row for row in db.execute(BEST_PAIR_QUERY).fetchall()]
+	for result in best_pair:
+		data[1]['top_pair_image_1'] = result['pair_file_1']
+		data[1]['top_pair_image_2'] = result['pair_file_2']
+		data[1]['top_pair_approvals'] = result['pos_votes']
+
 	return render_template('leaderboard.html', data = data)
 
 '''One problem with always writing a new image to the same path
 (static/img/bbox_img_1.png, etc) is that the browser will serve
 up the cached page instead of the refreshed, randomized one.
 
-What this last decorator does is essentially disable caching
+To fix this, this last decorator essentially disables caching
 after any request is made (max-age=0). This seemed slightly less hacky
-than appending some random hash after the url of the models page.
-
-It also adds headers to both force latest IE rendering engine or Chrome Frame
+than appending some random hash after the url of the models page to ensure
+each photo-pair served has a unique url.
 
 See: https://stackoverflow.com/questions/13768007/browser-caching-issues-in-flask
 '''
