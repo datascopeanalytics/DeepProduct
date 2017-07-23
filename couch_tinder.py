@@ -212,13 +212,17 @@ def leaderboard():
 	'''
 	ranked_models = [row for row in db.execute(LEAD_QUERY).fetchall()]
 	data = {}
+	data['model_indices'] = [i+1 for i in range(len(ranked_models))]
 	for rank, result in enumerate(ranked_models):
-		name_key = f'model_{rank+1}_name'
-		data[name_key] = result['model']
-		vote_key = f'model_{rank+1}_votes'
-		data[vote_key] = result['votes']
-		match_key = f'model_{rank+1}_matches'
-		data[match_key] = result['pos_votes']
+		rank_val = rank + 1
+		rank_dict = {}
+		name_key = f'model_name'
+		rank_dict[name_key] = result['model']
+		vote_key = f'model_votes'
+		rank_dict[vote_key] = result['votes']
+		match_key = f'model_matches'
+		rank_dict[match_key] = result['pos_votes']
+		data[rank_val] = rank_dict
 
 	return render_template('leaderboard.html', data = data)
 
