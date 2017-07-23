@@ -229,15 +229,15 @@ def leaderboard():
 	SELECT model, pair_file_1, pair_file_2,
 	SUM(user_vote) AS pos_votes, COUNT(1) AS votes
 	FROM user_feedback
-	WHERE model = {}
+	WHERE model = '{}'
 	GROUP BY model, pair_file_1, pair_file_2
 	ORDER BY pos_votes DESC LIMIT 1
 	'''.format(data[1]['model_name'])
 
 	best_pair = [row for row in db.execute(BEST_PAIR_QUERY).fetchall()]
 	for result in best_pair:
-		data[1]['top_pair_image_1'] = result['pair_file_1']
-		data[1]['top_pair_image_2'] = result['pair_file_2']
+		data[1]['top_pair_1'] = result['pair_file_1']
+		data[1]['top_pair_2'] = result['pair_file_2']
 		data[1]['top_pair_approvals'] = result['pos_votes']
 
 	return render_template('leaderboard.html', data = data)
