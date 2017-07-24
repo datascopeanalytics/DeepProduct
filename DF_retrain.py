@@ -9,6 +9,7 @@ from keras.models import Model
 from keras.layers import Dense
 from keras import callbacks
 from keras import metrics
+import keras.backend as K
 
 import pickle
 import time
@@ -45,6 +46,9 @@ def generator(df, batch_size):
         attr = (df.iloc[subset,6:].values>0)
         yield np.array(proc_imgs), attr
 
+def H_pred(y_true, y_pred):
+    return K.mean(K.sum(K.abs(y_true-y_pred),axis=1))
+
 
 def main(batch_size=64,steps_per_epoch=10,epochs=1,save_file=None):
 	df = pd.read_table('Data/DeepFashion/list_attr_img.txt',skiprows=1,sep='\s+',header=None)
@@ -59,7 +63,7 @@ def main(batch_size=64,steps_per_epoch=10,epochs=1,save_file=None):
 	predictions = Dense(1000, activation='sigmoid',name='predictions')(x)
 
 	new_model = Model(inputs=base_model.input, outputs=predictions)
-	new_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[metrics.top_k_categorical_accuracy])
+	new_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[H_pred])
 
 	tbCB = callbacks.TensorBoard(log_dir="logs/{}".format(time.time()), histogram_freq=0, write_graph=False, write_images=False)
 	checkpointCB = callbacks.ModelCheckpoint("checkpoints/{}".format(time.time()))

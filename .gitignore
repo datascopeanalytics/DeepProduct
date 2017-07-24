@@ -1,7 +1,8 @@
 # Tensorflow training data
 logs/
 checkpoints/
-
+*.h5
+.ipynb/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

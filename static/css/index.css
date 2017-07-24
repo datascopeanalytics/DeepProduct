@@ -5,11 +5,18 @@
     // A shitty button
     font-size: 0.9em;
     border-bottom: 1px solid #ccc;
-    font-weight: bold;
+    font-style: normal;
+    font-weight: 400;
 }
+
+.my-button dl dt{ font-weight: 400; }
+
+.narrow { font-weight: 400; }
 
 .flash          { background: #cee5F5; padding: 0.5em;
                   border: 1px solid #aacbe2; }
+
+
 /*  .navbar.navbar-default {
     font-size: 2em;
     color: black;

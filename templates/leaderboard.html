@@ -1,0 +1,64 @@
+{% extends "base.html" %} 
+{% block css %} 
+{{ super() }}
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %} 
+
+{% block main %} 
+{{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px;'>
+      <h2 class="text-center">Public Leaderboard</h2>
+    </div>
+  </div>
+
+  {% for i in data['model_indices'] %}
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="text-center">{{ "{}. {}".format(i, data[i]['model_name']) }}</h3>
+      </div>
+
+      <div class="col-md-4">
+        <h3 class="text-center">{{ "Approval Rate: {:.1f} percent".format(data[i]['model_matches']*100.0/data[i]['model_votes']) }}</h3>
+      </div>
+   
+      <div class="col-md-4">
+        <h3 class="text-center">{{ "Approved {} Times".format(data[i]['model_matches']) }}</h3>
+      </div> 
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px; padding-top: 30px; '>
+      <p style='text-align: center; font-weight: 500; font-size: 18'>{{ "Top Ranked Pair from {} (Approved {} Times)".format(data[1]['model_name'], data[1]['top_pair_approvals']) }} </p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data[1]['top_pair_1']) }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data[1]['top_pair_2']) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+
+</div>
+
+{% endblock main %} 

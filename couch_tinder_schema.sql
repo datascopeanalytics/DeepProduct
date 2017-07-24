@@ -12,15 +12,18 @@ their feedback in this table. This will keep track of
 
 Any of this is subject to clarification/refinement as 
 we get a clearer idea of structure.
+
+Figure out if and how to log sessions later
 ***************************/
 
 
 drop table if exists user_feedback;
 create table user_feedback(
 	id integer primary key autoincrement,
-	session text not null,
+	-- session text not null,
 	pair_file_1 text not null,
 	pair_file_2 text not null,
 	model text not null,
-	user_vote
+	user_vote integer not null,
+	comment text not null
 	);
