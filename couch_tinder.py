@@ -133,54 +133,6 @@ def make_bbox_image(txt_file_path, bbox_coords):
 
 #######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
 
-
-#######################	 FILES AND IMAGES HELPER FUNCTIONS	############
-
-def get_AB_testing_pairs():
-	if not hasattr(g, 'AB_testing_pairs'):
-		with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
-			AB_pairs = f.readlines()
-			g.AB_testing_pairs = AB_pairs
-	return g.AB_testing_pairs
-
-def get_bbox_coords(txt_file_path):
-	'''
-	For now, assumes that you input an image path
-	from within the DEEP_FASHION_IMAGES directory of config.
-
-	This goes ahead and gets the bounding box coordinates
-	of said image as a list of integers corresponding to
-	x_1, y_1, x_2, y_2
-	'''
-	bbox_img_path = os.path.join('img', txt_file_path)
-	img_row = [v for v in app.config['BBOX_FILE'] if v[0] == bbox_img_path]
-	if not img_row:
-		return None
-	coords = img_row[0][1:]
-	return [int(v) for v in coords]
-
-def make_bbox_image(txt_file_path, bbox_coords):
-	'''
-	Once you have the coordinates from above, this function
-	takes the same path from above and returns a version with
-	the bounding box lines drawn over it.
-
-	The output of this function can be saved into static to be
-	served on the models template.  Only quirk there is that RGBA
-	images can't be saved as JPEGS
-	'''
-	in_img = os.path.join(app.config['DEEP_FASHION_IMAGES'], txt_file_path)
-	base = PIL.Image.open(in_img).convert('RGBA')
-	rect = PIL.Image.new('RGBA', base.size, (255,255,255,0))
-	d = ImageDraw.Draw(base)
-	lower_corner = tuple(bbox_coords[:2])
-	upper_corner = tuple(bbox_coords[2:])
-	d.rectangle((lower_corner, upper_corner), outline = 'red')
-	return PIL.Image.alpha_composite(base, rect)
-
-
-#######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
-
 @app.route('/')
 def home(n_jpgs = 4):
 	src_dir = app.config['DEEP_FASHION_IMAGES']
@@ -306,4 +258,3 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
-
