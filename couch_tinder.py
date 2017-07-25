@@ -32,7 +32,7 @@ with app.open_resource('static/to_dropbox/DeepFashion/list_bbox.txt', 'r') as f:
 	bbox_information = [v.split() for v in raw_bbox_lines]
 
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
-			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/img/',
+			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': 'blue; no, yellow!',
 			  'BBOX_FILE': bbox_information
 			  }
@@ -90,7 +90,7 @@ def initdb_command():
 
 def get_AB_testing_pairs():
 	if not hasattr(g, 'AB_testing_pairs'):
-		with app.open_resource('web_app_AB_pairs.txt', mode = 'r') as f:
+		with app.open_resource('all_pairs.txt', mode = 'r') as f:
 			AB_pairs = f.readlines()
 			g.AB_testing_pairs = AB_pairs
 	return g.AB_testing_pairs
@@ -104,8 +104,7 @@ def get_bbox_coords(txt_file_path):
 	of said image as a list of integers corresponding to
 	x_1, y_1, x_2, y_2
 	'''
-	bbox_img_path = os.path.join('img', txt_file_path)
-	img_row = [v for v in app.config['BBOX_FILE'] if v[0] == bbox_img_path]
+	img_row = [v for v in app.config['BBOX_FILE'] if v[0] == txt_file_path]
 	if not img_row:
 		return None
 	coords = img_row[0][1:]
@@ -135,7 +134,7 @@ def make_bbox_image(txt_file_path, bbox_coords):
 
 @app.route('/')
 def home(n_jpgs = 4):
-	src_dir = app.config['DEEP_FASHION_IMAGES']
+	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
 	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
 	sampled = np.random.choice(os.listdir(random_subdir), size = n_jpgs, replace = False)
 	data = {}
