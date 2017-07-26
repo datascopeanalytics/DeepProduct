@@ -13,7 +13,10 @@
 <div class="container">
   <div class="row">
     <div class="span" style='padding-bottom: 30px;'>
-      <h1 class="text-center">Any Swipe Can Change Your...Couch</h1>
+      <h1 class="text-center">
+        <p>Dope or Nope?</p>
+        <p style='font-size: 16; '>By Datascope</p>
+      </h1>
     </div>
   </div>
   <div class="row">
@@ -21,7 +24,7 @@
     <div class="col-md-3">
       <div class="panel panel-default">
         <div class="panel-body">
-          <img width=224px height=224px
+          <img style='margin: auto; ' width=224px height=224px
             class="thumbnail" src="{{ url_for('static', filename=data[key]) }}">
         </div>
       </div>
@@ -29,14 +32,19 @@
   {% endfor %}
   </div>
   <div class="row">
-    <div class="col-md-2 col-md-offset-3">
-      <h5 class="text-left">
+    <div class='col-md-12'>
+      <p class="text-center">We trained a neural network to find clothes that look similar. How did we do? You be the judge!</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 col-md-offset-3">
+      <h5 class="text-center" >
         <button class="btn btn-success" onclick="window.location.href='{{ url_for('models') }}'">
-        Start Making Matches!</button>
+        Play Dope or Nope!</button>
       </h5>
     </div>
-    <div class="col-md-2">
-      <h5 class="text-left">
+    <div class="col-md-3">
+      <h5 class="text-center">
         <button class="btn btn-success" onclick="window.location.href='{{ url_for('leaderboard') }}'">
         View the Leaderboard</button>
       </h5>
