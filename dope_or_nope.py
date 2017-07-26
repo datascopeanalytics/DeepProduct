@@ -34,7 +34,7 @@ with app.open_resource('static/to_dropbox/DeepFashion/list_bbox.txt', 'r') as f:
 with app.open_resource('secret_key.txt','r') as f:
 	l337h4xx = f.readlines()[0]
 
-new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
+new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': l337h4xx,
 			  'BBOX_FILE': bbox_information
@@ -71,7 +71,7 @@ def close_db(error):
 
 def init_db():
 	db = get_db()
-	with app.open_resource('couch_tinder_schema.sql', mode = 'r') as f:
+	with app.open_resource('dope_nope_schema.sql', mode = 'r') as f:
 		db.cursor().executescript(f.read())
 	db.commit()
 
