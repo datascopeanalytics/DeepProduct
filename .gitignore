@@ -96,3 +96,6 @@ ENV/
 # Directory containing data
 Data
 static/to_dropbox
+
+# Database secret key
+secret_key.txt
