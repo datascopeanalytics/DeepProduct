@@ -35,8 +35,8 @@
   </div>
   <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
     <dl>
-      <dd><input id=match type=submit name='match' value='Match!'>
-      <dd><input id=nomatch type=submit name='match' value='No match'>
+      <dd><input id=match type=submit name='match' value='Match!' hidden=True>
+      <dd><input id=nomatch type=submit name='match' value='No match' hidden=True>
       <dd><textarea rows=2 cols=40 name='comment'></textarea>
       <dt>Leave a comment about this pair of images, if you so desire (e.g. These match sooooo well or What was this machine thinking?!)
       <dd><input type=hidden name='model' value="{{ data['model_served'] }}">
