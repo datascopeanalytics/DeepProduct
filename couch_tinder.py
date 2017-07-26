@@ -31,9 +31,12 @@ with app.open_resource('static/to_dropbox/DeepFashion/list_bbox.txt', 'r') as f:
 	raw_bbox_lines = f.readlines()
 	bbox_information = [v.split() for v in raw_bbox_lines]
 
+with app.open_resource('secret_key.txt','r') as f:
+	l337h4xx = f.readlines()[0]
+
 new_config = {'DATABASE': os.path.join(app.root_path, 'couch_tinder.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
-			  'SECRET_KEY': 'blue; no, yellow!',
+			  'SECRET_KEY': l337h4xx,
 			  'BBOX_FILE': bbox_information
 			  }
 app.config.update(new_config)
@@ -179,10 +182,10 @@ def judgement():
 		print(request.form['match'])
 
 		if request.form['match'] == 'Match!':
-			flash('You totally judged that couch matched')
+			flash('You said that pair was dope!')
 			matching = 1
 		else:
-			flash("You said those didn't match")
+			flash("To that pair, you said nope!")
 			matching = 0
 			
 		db = get_db()
