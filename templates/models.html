@@ -27,18 +27,26 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-md-2 col-md-offset-4">
+      <p style='font-size: 20px; text-align: center;'>&#8592; = NOPE</p>
+    </div>
+    <div class="col-md-2">
+      <p style='font-size: 20px; text-align: center;'>&#8594; = DOPE</p>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-md-12">
-      <p style='text-align: center'>Swipe left (left arrow key) to say that these two images don't match; swipe right (right arrow key) to say that they do! </p>
+      <p style='text-align: center'>Press the left arrow to say that these two images don't match; Press the right arrow to say that they do! </p>
 
-      <p style='text-align: center'>Matching is whatever you think it means, babe.</p>
+      <p style='text-align: center'>Matching is whatever you think it means.</p>
     </div>
   </div>
   <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
     <dl>
       <dd><input id=match type=submit name='match' value='Match!' hidden=True>
       <dd><input id=nomatch type=submit name='match' value='No match' hidden=True>
-      <dd><textarea rows=2 cols=40 name='comment'></textarea>
-      <dt>Leave a comment about this pair of images, if you so desire (e.g. These match sooooo well or What was this machine thinking?!)
+      <dt style='text-align: center ;''>Leave a comment about this pair of images, if you so desire (e.g. "These match sooooo well!" or "What was this machine thinking?!")
+      <dd style='text-align: center ;'><textarea rows=2 cols=100 name='comment'></textarea>
       <dd><input type=hidden name='model' value="{{ data['model_served'] }}">
       <dd><input type=hidden name='image_1' value="{{ data['image_1_path'] }}">
       <dd><input type=hidden name='image_2' value="{{ data['image_2_path'] }}">
