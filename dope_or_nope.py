@@ -175,6 +175,28 @@ def models():
 	        }
 	return render_template('models.html', data = data)
 
+'''Testing a layout where we display three images, potentially with
+two models supplying a recommendation for the same base image
+
+Right now, I'm just choosing three images at random, but we can just
+as well pass in images directly from a text file
+'''
+@app.route('/twomodels')
+def twomodels():
+	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
+	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
+	sampled = np.random.choice(os.listdir(random_subdir), size = 3, replace = False)
+	sampled = ['/'.join(v.split('/')[1:]) for v in sampled]
+
+	data = {'reference_image': sampled[0],
+			'model_one': 'MD1',
+			'image_one': sampled[1],
+			'model_two': 'MD2',
+			'image_two': sampled[2]
+			}
+	return render_template('twomodels.html', data = data)
+
+
 @app.route('/judgement', methods=['POST'])
 def judgement():
 	if request.method == 'POST':
