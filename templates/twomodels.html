@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block css %} {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock css %} {% block view_title %}{% endblock view_title %} {% block main %} {{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px;'>
+      <h2 class="text-center">Which Image Best Matches the Middle Image?</h2>
+      <h4 class="text-center">Vote with your arrow keys</h4>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=100% style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data['image_left']) }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=100% style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data['reference_image']) }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=100% style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data['image_right']) }}">
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+{% endblock main %}

@@ -186,13 +186,13 @@ def twomodels():
 	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
 	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
 	sampled = np.random.choice(os.listdir(random_subdir), size = 3, replace = False)
-	sampled = ['/'.join(v.split('/')[1:]) for v in sampled]
+	sampled = ['/'.join(os.path.join(random_subdir,v).split('/')[1:]) for v in sampled]
 
 	data = {'reference_image': sampled[0],
-			'model_one': 'MD1',
-			'image_one': sampled[1],
-			'model_two': 'MD2',
-			'image_two': sampled[2]
+			'model_left': 'MD1',
+			'image_left': sampled[1],
+			'model_right': 'MD2',
+			'image_right': sampled[2]
 			}
 	return render_template('twomodels.html', data = data)
 
