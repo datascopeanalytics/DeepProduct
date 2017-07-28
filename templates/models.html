@@ -38,7 +38,7 @@
     <div class="col-md-12">
       <p style='text-align: center'>Press the left arrow to say that these two images don't match; Press the right arrow to say that they do! </p>
 
-      <p style='text-align: center'>Matching is whatever you think it means.</p>
+      <p style='text-align: center'>Matching is whatever you think it means. Once you're done, you can <a href = "{{ url_for('leaderboard') }}">check out the leaderboard.</a></p>
     </div>
   </div>
   <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
