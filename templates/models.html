@@ -27,16 +27,22 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-2 col-md-offset-4">
-      <p style='font-size: 20px; text-align: center;'>&#8592; = NOPE</p>
+    <div class="col-md-2 col-md-offset-4 text-right">
+<!--       Messed around for longer than I'd like with UI here.  Sticking with what we have, for now.  Other option
+is to literally put images of the arrow keys -->
+<!--       <button class="btn btn-success" disabled>&#8592;<br/>NOPE!</br/></button> -->
+<!--       <p style='font-size: 20px; text-align: center; background-color: rgba(218, 46, 37, 0.5); '>&#8592; = NOPE</p> -->
+      <p style='font-size: 20px; text-align: center; '>&#8592; = NOPE</p>
     </div>
     <div class="col-md-2">
-      <p style='font-size: 20px; text-align: center;'>&#8594; = DOPE</p>
+<!--       <button class="btn btn-success" disabled>&#8594;<br/>DOPE!</br/></button> -->
+<!--       <p style='font-size: 20px; text-align: center; background-color: rgba(91, 208, 107,0.5);'>&#8594; = DOPE</p> -->
+      <p style='font-size: 20px; text-align: center; '>&#8594; = DOPE</p>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <p style='text-align: center'>Press the left arrow to say that these two images don't match; Press the right arrow to say that they do! </p>
+      <p style='text-align: center'>Press the left arrow key to say that these two images don't match; Press the right arrow key to say that they do! </p>
 
       <p style='text-align: center'>Matching is whatever you think it means. Once you're done, you can <a href = "{{ url_for('leaderboard') }}">check out the leaderboard.</a></p>
     </div>
