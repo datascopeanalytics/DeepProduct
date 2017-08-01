@@ -26,6 +26,9 @@ to this particular path
 
 BBOX_FILE: This is consulted any time we get a path to an image from
 the AB pairs file and need to find the bounding boxes to draw over it
+
+DEMO_PAIRS: Quality controls for which pairs we view in what order for potentially
+showing parts of this to a client.  
  '''
 with app.open_resource('static/to_dropbox/DeepFashion/list_bbox.txt', 'r') as f:
 	raw_bbox_lines = f.readlines()
@@ -37,7 +40,8 @@ with app.open_resource('secret_key.txt','r') as f:
 new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': l337h4xx,
-			  'BBOX_FILE': bbox_information
+			  'BBOX_FILE': bbox_information,
+			  'DEMO_PAIRS':[101,447,1445, 224, 922, 1296]
 			  }
 app.config.update(new_config)
 
@@ -181,19 +185,29 @@ def models():
 def demo(pair_idx):
 	AB_pairs = get_AB_testing_pairs()
 	if not pair_idx:
-		pair_idx = np.random.choice(np.arange(len(AB_pairs)),1).item()
+		pair_idx = app.config['DEMO_PAIRS'][0]
+		return redirect(url_for('demo', pair_idx = pair_idx))
+
 	served_pair = AB_pairs[pair_idx].split()
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
 	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
+
+	# Figure out which of the listed DEMO_PAIRS you are on, and set the
+	# next pair.  If there is no next pair, set the next_idx attribute as none.
+	loc_in_sequence = app.config['DEMO_PAIRS'].index(pair_idx)
+	try:
+		next_idx = app.config['DEMO_PAIRS'][loc_in_sequence + 1]
+	except IndexError as e:
+		next_idx = ''
 
 	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
 		bbox_coords = get_bbox_coords(rel_img_path)
 		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
 		bbox_img.save(f'static/img/bbox_img_{i+1}.png')
 
-	flash(f'Showing pair index {pair_idx}')
 	data = {'current_pair':pair_idx,
+			'next_pair':next_idx,
 			'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
 	        'image_2_path':'/'.join(pair_img_2.split('/')[1:])
@@ -255,8 +269,10 @@ def judgement():
 		db.commit()
 	# If you're in the demo view of stuff, redirect to the demo page.
 	# Otherwise, go to the models page
-	if request.form['pair_idx']:
-		return redirect(url_for('demo'))
+	if request.form['pair_idx'] and request.form['next_idx']:
+		return redirect(url_for('demo', pair_idx=request.form['next_idx']))
+	elif request.form['pair_idx']:
+		return redirect(url_for('home'))
 	return redirect(url_for('models'))
 
 @app.route('/leaderboard')
