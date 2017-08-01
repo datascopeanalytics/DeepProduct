@@ -1,0 +1,70 @@
+{% extends "base.html" %} {% block css %} {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock css %} {% block view_title %}{% endblock view_title %} {% block main %} {{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 10px;'>
+      <h2 class="text-center">Is it a Match?</h2>
+      <h4 class="text-center">Vote with your arrow keys!</h4>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=400px height=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename='img/bbox_img_1.png') }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=400px height=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename='img/bbox_img_2.png') }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-md-offset-4 text-right">
+      <p style='font-size: 20px; text-align: center; '>&#8592; = NOPE</p>
+    </div>
+    <div class="col-md-2">
+      <p style='font-size: 20px; text-align: center; '>&#8594; = DOPE</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p style='text-align: center'>Matching is whatever you think it means.</a></p>
+    </div>
+  </div>
+  <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
+    <dl>
+      <dd><input id=match type=submit name='match' value='Match!' hidden=True>
+      <dd><input id=nomatch type=submit name='match' value='No match' hidden=True>
+      <dt style='text-align: center ;''>Leave a comment about this pair of images, if you so desire (e.g. "These match sooooo well!" or "What was this machine thinking?!")
+      <dd style='text-align: center ;'><textarea rows=2 cols=100 name='comment'></textarea>
+      <dd><input type=hidden name='model' value="{{ data['model_served'] }}">
+      <dd><input type=hidden name='image_1' value="{{ data['image_1_path'] }}">
+      <dd><input type=hidden name='image_2' value="{{ data['image_2_path'] }}">
+      <dd><input type=hidden name ='pair_idx' value="{{ data['current_pair'] }}">
+    </dl>
+  </form>
+  <script type='text/javascript'>
+
+    document.onkeydown = function(evt) {
+      evt = evt || window.event;
+      switch (evt.keyCode) {
+        case 37:
+          $('#myform #nomatch').click();
+          break;
+        case 39:
+          $('#myform #match').click();
+          break;
+      }
+    };
+  </script>
+</div>
+{% endblock main %}

@@ -175,26 +175,56 @@ def models():
 	        }
 	return render_template('models.html', data = data)
 
+
+@app.route('/demo', defaults={'pair_idx':None})
+@app.route('/demo/<int:pair_idx>')
+def demo(pair_idx):
+	AB_pairs = get_AB_testing_pairs()
+	if not pair_idx:
+		pair_idx = np.random.choice(np.arange(len(AB_pairs)),1).item()
+	served_pair = AB_pairs[pair_idx].split()
+	pair_model = served_pair[0]
+	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
+	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
+
+	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
+		bbox_coords = get_bbox_coords(rel_img_path)
+		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
+		bbox_img.save(f'static/img/bbox_img_{i+1}.png')
+
+	flash(f'Showing pair index {pair_idx}')
+	data = {'current_pair':pair_idx,
+			'model_served':pair_model,
+	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
+	        'image_2_path':'/'.join(pair_img_2.split('/')[1:])
+	        }
+	return render_template('demo.html', data = data)
+
+
+
+
+
+
 '''Testing a layout where we display three images, potentially with
 two models supplying a recommendation for the same base image
 
 Right now, I'm just choosing three images at random, but we can just
 as well pass in images directly from a text file
 '''
-@app.route('/twomodels')
-def twomodels():
-	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
-	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
-	sampled = np.random.choice(os.listdir(random_subdir), size = 3, replace = False)
-	sampled = ['/'.join(os.path.join(random_subdir,v).split('/')[1:]) for v in sampled]
+# @app.route('/twomodels')
+# def twomodels():
+# 	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
+# 	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
+# 	sampled = np.random.choice(os.listdir(random_subdir), size = 3, replace = False)
+# 	sampled = ['/'.join(os.path.join(random_subdir,v).split('/')[1:]) for v in sampled]
 
-	data = {'reference_image': sampled[0],
-			'model_left': 'MD1',
-			'image_left': sampled[1],
-			'model_right': 'MD2',
-			'image_right': sampled[2]
-			}
-	return render_template('twomodels.html', data = data)
+# 	data = {'reference_image': sampled[0],
+# 			'model_left': 'MD1',
+# 			'image_left': sampled[1],
+# 			'model_right': 'MD2',
+# 			'image_right': sampled[2]
+# 			}
+# 	return render_template('twomodels.html', data = data)
 
 
 @app.route('/judgement', methods=['POST'])
@@ -223,6 +253,10 @@ def judgement():
 			 		   request.form['comment']]
 		db.execute(INSERT_QUERY,INSERT_DATA)
 		db.commit()
+	# If you're in the demo view of stuff, redirect to the demo page.
+	# Otherwise, go to the models page
+	if request.form['pair_idx']:
+		return redirect(url_for('demo'))
 	return redirect(url_for('models'))
 
 @app.route('/leaderboard')
