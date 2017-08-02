@@ -15,6 +15,7 @@ class MultiIndexHash(object):
         self.s = np.array_split(np.arange(self.Q),self.m)
         
         self.tables = self.init_tables()
+        self.lookup = list(np.asarray(list(t.keys())) for t in self.tables)
         
         
     def init_tables(self):
@@ -39,7 +40,7 @@ class MultiIndexHash(object):
         r_ = r // self.m
         a = r % self.m
         
-        neighbors = set()
+        neighbors = []
         
         ## Search for neighbors using substring hash tables
         for j in range(self.m):
@@ -53,22 +54,21 @@ class MultiIndexHash(object):
             q_sub = query[sub_index]
             
                         
-            candidates = self.tables[j][tuple(q_sub)]
-            codes_sub = self.codes[np.ix_(candidates,sub_index)]
-
-            import pdb
-            #pdb.set_trace()
+            look_up = self.lookup[j]          
             q_sub = np.reshape(q_sub,(1,-1))
-            dist = np.sum(np.logical_xor(q_sub,codes_sub), axis=1) ##Hamming Distance
+            dist = np.sum(np.logical_xor(q_sub,look_up), axis=1) ##Hamming Distance
+            
+            candidates = set()
 
             for n in np.argwhere(dist <= r_search).flatten():
-                #print(n)
-                neighbors.add(candidates[n])
+                key = tuple(look_up[n,:])
+                l = self.tables[j][key]
+                neighbors += l
+
             
         ## Check all neighbors using full Hamming Distance
         
-        
-        neighbors = np.array(list(neighbors))
+        neighbors = np.array(list(set(neighbors)))
         codes_n = self.codes[neighbors,:]
         dist = np.sum(np.logical_xor(query,codes_n), axis=1)
         
@@ -87,15 +87,14 @@ class MultiIndexHash(object):
             sub_index = self.s[j]
             q_sub = query[sub_index]
             
-            look_up = self.tables[j][tuple(q_sub)]
-            codes_sub = self.codes[np.ix_(look_up,sub_index)]
-            
+            look_up = self.lookup[j]            
             q_sub = np.reshape(q_sub,(1,-1))
-            dist = np.sum(np.logical_xor(q_sub,codes_sub), axis=1) ##Hamming Distance
+            dist = np.sum(np.logical_xor(q_sub,look_up), axis=1) ##Hamming Distance
             
             candidates = set()
             for n in np.argwhere(dist <= r_).flatten():
-                candidates.add(look_up[n])
+                for l in self.tables[j][tuple(look_up[n,:])]:
+                    candidates.add(l)
                 
             candidates = np.array(list(candidates))
             codes_n = self.codes[candidates,:]
