@@ -32,15 +32,15 @@ For this task, we decided to use the [VGG-16](http://www.robots.ox.ac.uk/~vgg/re
 
 Getting started with this task is almost comically easy thanks to the high-level neural network library [Keras](https://keras.io/). We can directly import the VGG-16 architecture and download the weights from a pre-trained model in one simple step.
 
-'''
+```python
 from keras.applications import VGG16
 
 model = VGG16(weights='imagenet')
-'''
+```
 
 Then, we can create a model that gives us just the output of the first fully connected layer and start producing feature vectors
 
-'''
+```python
 from keras.applications import imagenet_utils
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
@@ -59,7 +59,7 @@ image = np.expand_dims(image,axis=0)
 image = preprocess(image)
     
 feature = feature_model.predict(image)
-'''
+```
 
 Using the pre-trained weights from VGG-16 gives us pretty good results, but we can improve our results by re-training the model on the DeepFashion dataset. The pre-trained model we started with is trained on the [ImageNet challenge](http://www.image-net.org/challenges/LSVRC/), which tasks the network with classifying images into 1,000 categories ranging from firetruck to airplane to one of 120 different breeds of dog. ([seriously](https://arxiv.org/pdf/1409.0575.pdf)) However, for our task, we want to look at small differences between items that fall into the same category. To VGG-16, all 80,000 images of a dress might look the same since they fall in the same category, so we need to train our network to learn the differences.
 
