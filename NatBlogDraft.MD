@@ -65,7 +65,7 @@ Using the pre-trained weights from VGG-16 gives us pretty good results, but we c
 
 Fortunately, we can re-train our network on our new data set while still leveraging the power of pre-trained networks through a technique known as [transfer learning](http://cs231n.github.io/transfer-learning/). This means that we take a pre-trained network like VGG-16 and re-use the weights in the convolutional layers, but learn completely new weights (and architectures) for the dense classification layers at the end. Again, Keras makes this process very simple for us:
 
-'''python
+```python
 from keras.layers import Dense
 
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
