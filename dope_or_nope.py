@@ -139,14 +139,20 @@ def make_bbox_image(txt_file_path, bbox_coords):
 
 #######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
 
+'''The home page populates from all_pairs.txt. Before doing so, though,
+it makes sure to choose randomly from text file rows that have four
+unique images in them
+'''
 @app.route('/')
 def home(n_jpgs = 4):
-	src_dir = os.path.join(app.config['DEEP_FASHION_IMAGES'],'img')
-	random_subdir = os.path.join(src_dir, np.random.choice(os.listdir(src_dir),1).item())
-	sampled = np.random.choice(os.listdir(random_subdir), size = n_jpgs, replace = False)
+	AB_pairs = [v.split() for v in get_AB_testing_pairs()]
+	four_img_lines = [v for v in AB_pairs if len(v) == 5]
+	four_uniq_lines = [v for v in four_img_lines if len(set(v[1:])) == 4]
+	chosen_idx = np.random.choice(np.arange(len(four_uniq_lines)),1).item()
+	chosen_imgs = four_uniq_lines[chosen_idx][1:]
 	data = {}
-	for i, jpg in enumerate(sampled):
-		jpg_path = os.path.join(random_subdir, jpg)
+	for i, jpg in enumerate(chosen_imgs):
+		jpg_path = os.path.join(app.config['DEEP_FASHION_IMAGES'], jpg)
 		data[i] = '/'.join(jpg_path.split('/')[1:])
 	return render_template('index.html', data = data)
 
@@ -269,10 +275,10 @@ def judgement():
 		db.commit()
 	# If you're in the demo view of stuff, redirect to the demo page.
 	# Otherwise, go to the models page
-	if request.form['pair_idx'] and request.form['next_idx']:
-		return redirect(url_for('demo', pair_idx=request.form['next_idx']))
-	elif request.form['pair_idx']:
-		return redirect(url_for('home'))
+	# if request.form['pair_idx'] and request.form['next_idx']:
+	# 	return redirect(url_for('demo', pair_idx=request.form['next_idx']))
+	# elif request.form['pair_idx']:
+	# 	return redirect(url_for('home'))
 	return redirect(url_for('models'))
 
 @app.route('/leaderboard')
