@@ -3,13 +3,8 @@ import shutil
 import sqlite3
 import numpy as np
 
-import PIL
-from PIL import Image, ImageDraw
-
 from flask import Flask, request, session, g, redirect, url_for, abort, \
 	render_template, flash, make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -24,15 +19,9 @@ particular image, we'll always just be looking in one of the many
 subfolders is that directory. All image references can be passed in relative 
 to this particular path
 
-BBOX_FILE: This is consulted any time we get a path to an image from
-the AB pairs file and need to find the bounding boxes to draw over it
-
 DEMO_PAIRS: Quality controls for which pairs we view in what order for potentially
 showing parts of this to a client.  
  '''
-with app.open_resource('static/to_dropbox/DeepFashion/list_bbox.txt', 'r') as f:
-	raw_bbox_lines = f.readlines()
-	bbox_information = [v.split() for v in raw_bbox_lines]
 
 with app.open_resource('secret_key.txt','r') as f:
 	l337h4xx = f.readlines()[0]
@@ -40,7 +29,6 @@ with app.open_resource('secret_key.txt','r') as f:
 new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': l337h4xx,
-			  'BBOX_FILE': bbox_information,
 			  'DEMO_PAIRS':[101,447,1445, 224, 922, 1296]
 			  }
 app.config.update(new_config)
@@ -102,41 +90,6 @@ def get_AB_testing_pairs():
 			g.AB_testing_pairs = AB_pairs
 	return g.AB_testing_pairs
 
-def get_bbox_coords(txt_file_path):
-	'''
-	For now, assumes that you input an image path
-	from within the DEEP_FASHION_IMAGES directory of config.
-
-	This goes ahead and gets the bounding box coordinates
-	of said image as a list of integers corresponding to
-	x_1, y_1, x_2, y_2
-	'''
-	img_row = [v for v in app.config['BBOX_FILE'] if v[0] == txt_file_path]
-	if not img_row:
-		return None
-	coords = img_row[0][1:]
-	return [int(v) for v in coords]
-
-def make_bbox_image(txt_file_path, bbox_coords):
-	'''
-	Once you have the coordinates from above, this function
-	takes the same path from above and returns a version with
-	the bounding box lines drawn over it.
-
-	The output of this function can be saved into static to be
-	served on the models template.  Only quirk there is that RGBA
-	images can't be saved as JPEGS
-	'''
-	in_img = os.path.join(app.config['DEEP_FASHION_IMAGES'], txt_file_path)
-	base = PIL.Image.open(in_img).convert('RGBA')
-	rect = PIL.Image.new('RGBA', base.size, (255,255,255,0))
-	d = ImageDraw.Draw(base)
-	lower_corner = tuple(bbox_coords[:2])
-	upper_corner = tuple(bbox_coords[2:])
-	d.rectangle((lower_corner, upper_corner), outline = 'red')
-	return PIL.Image.alpha_composite(base, rect)
-
-
 #######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
 
 '''The home page populates from all_pairs.txt. Before doing so, though,
@@ -161,10 +114,8 @@ testing, this should work. Every time a request is made, we open up our
 reference text file, choose a random row, split it into its constituent parts 
 (first element = model, second element = first_image, third_element = second_image).
 
-These image paths are passed through our bounding box helper functions, which
-save things to the static directory.  Nevertheless, the actual image pathways
-from dropbox are passed to the models template too for database logging
-purposes.
+We then retrieve those images (and their bounding-box-drawn copies), put them in
+the data template, and pass the template on to be rendered
 '''
 @app.route('/models')
 def models():
@@ -172,16 +123,19 @@ def models():
 	served_pair = np.random.choice(AB_pairs,1).item().split()
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
+	fname, fext = os.path.splitext(pair_img_1)
+	pair_bbox_1 = '{}_bbox.png'.format(fname) 
+	
 	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
-
-	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
-		bbox_coords = get_bbox_coords(rel_img_path)
-		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
-		bbox_img.save('static/img/bbox_img_{}.png'.format(i+1))
+	fname, fext = os.path.splitext(pair_img_2)
+	pair_bbox_2 = '{}_bbox.png'.format(fname)
+	
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
-	        'image_2_path':'/'.join(pair_img_2.split('/')[1:])
+	        'image_2_path':'/'.join(pair_img_2.split('/')[1:]),
+		'image_1_bbox':'/'.join(pair_bbox_1.split('/')[1:]),
+		'image_2_bbox':'/'.join(pair_bbox_2.split('/')[1:])
 	        }
 	return render_template('models.html', data = data)
 
@@ -197,7 +151,12 @@ def demo(pair_idx):
 	served_pair = AB_pairs[pair_idx].split()
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
+	fname, fext = os.path.splitext(pair_img_1)
+	pair_bbox_1 = '{}_bbox.png'.format(fname) 
+	
 	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
+	fname, fext = os.path.splitext(pair_img_2)
+	pair_bbox_2 = '{}_bbox.png'.format(fname)
 
 	# Figure out which of the listed DEMO_PAIRS you are on, and set the
 	# next pair.  If there is no next pair, set the next_idx attribute as none.
@@ -207,16 +166,13 @@ def demo(pair_idx):
 	except IndexError as e:
 		next_idx = ''
 
-	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
-		bbox_coords = get_bbox_coords(rel_img_path)
-		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
-		bbox_img.save('static/img/bbox_img_{}.png'.format(i+1))
-
 	data = {'current_pair':pair_idx,
 			'next_pair':next_idx,
 			'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
-	        'image_2_path':'/'.join(pair_img_2.split('/')[1:])
+	        'image_2_path':'/'.join(pair_img_2.split('/')[1:]),
+		'image_1_bbox':'/'.join(pair_bbox_1.split('/')[1:]),
+		'image_2_bbox':'/'.join(pair_bbox_2.split('/')[1:])
 	        }
 	return render_template('demo.html', data = data)
 
