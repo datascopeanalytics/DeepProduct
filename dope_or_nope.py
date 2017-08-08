@@ -249,10 +249,10 @@ def judgement():
 		db.commit()
 	# If you're in the demo view of stuff, redirect to the demo page.
 	# Otherwise, go to the models page
-	# if request.form['pair_idx'] and request.form['next_idx']:
-	# 	return redirect(url_for('demo', pair_idx=request.form['next_idx']))
-	# elif request.form['pair_idx']:
-	# 	return redirect(url_for('home'))
+	if request.form['pair_idx'] and request.form['next_idx']:
+		return redirect(url_for('demo', pair_idx=request.form['next_idx']))
+	elif request.form['pair_idx']:
+		return redirect(url_for('home'))
 	return redirect(url_for('models'))
 
 @app.route('/leaderboard')
