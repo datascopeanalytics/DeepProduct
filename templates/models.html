@@ -6,7 +6,7 @@
   <div class="row">
     <div class="span" style='padding-bottom: 10px;'>
       <h2 class="text-center">Is it a Match?</h2>
-      <h4 class="text-center">Vote with your arrow keys! Press <img style='height:2em' src="static/img/right.png"> to say "Dope!" or <img style='height:2em' src="static/img/left.png"> to say "Nope!"</h4>
+      <h4 class="text-center">Vote with your arrow keys! Press <img style='height:2em' src="static/img/left.png"> to say "Nope!" or <img style='height:2em' src="static/img/right.png"> to say "Dope!"</h4>
     </div>
   </div>
   <div class="row">
@@ -14,7 +14,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-body">
-          <img width=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename='img/bbox_img_1.png') }}">
+          <img width=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data['image_1_bbox']) }}">
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-body">
-          <img width=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename='img/bbox_img_2.png') }}">
+          <img width=400px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data['image_2_bbox']) }}">
         </div>
       </div>
     </div>
