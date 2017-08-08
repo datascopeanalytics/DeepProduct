@@ -6,7 +6,7 @@
   <div class="row">
     <div class="span" style='padding-bottom: 10px;'>
       <h2 class="text-center">Is it a Match?</h2>
-      <h4 class="text-center">Vote with your arrow keys! Press <img style='height:2em' src="static/img/right.png"> to say "Dope!" or <img style='height:2em' src="static/img/left.png"> to say "Nope!"</h4>
+      <h4 class="text-center">Vote with your arrow keys! Press &#8594; to say "Dope!" or &#8592; to say "Nope!"</h4>
     </div>
   </div>
   <div class="row">
@@ -29,7 +29,7 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <p style='text-align: center'>Matching is whatever you think it means. Once you're done, you can <a href = "{{ url_for('leaderboard') }}">check out the leaderboard.</a></p>
+      <p style='text-align: center'>Matching is whatever you think it means.</a></p>
     </div>
   </div>
   <form id=myform action="{{ url_for('judgement') }}" method=post class=my-button >
@@ -41,8 +41,8 @@
       <dd><input type=hidden name='model' value="{{ data['model_served'] }}">
       <dd><input type=hidden name='image_1' value="{{ data['image_1_path'] }}">
       <dd><input type=hidden name='image_2' value="{{ data['image_2_path'] }}">
-      <dd><input type=hidden name ='pair_idx' value=''>
-      <dd><input type=hidden name ='next_idx' value=''>
+      <dd><input type=hidden name ='pair_idx' value="{{ data['current_pair'] }}">
+      <dd><input type=hidden name ='next_idx' value="{{ data['next_pair'] }}">
     </dl>
   </form>
   <script type='text/javascript'>
