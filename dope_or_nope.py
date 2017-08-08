@@ -177,7 +177,7 @@ def models():
 	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
 		bbox_coords = get_bbox_coords(rel_img_path)
 		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
-		bbox_img.save(f'static/img/bbox_img_{i+1}.png')
+		bbox_img.save('static/img/bbox_img_{}.png'.format(i+1))
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
@@ -210,7 +210,7 @@ def demo(pair_idx):
 	for i, rel_img_path in enumerate([served_pair[1], served_pair[2]]):
 		bbox_coords = get_bbox_coords(rel_img_path)
 		bbox_img = make_bbox_image(rel_img_path, bbox_coords)
-		bbox_img.save(f'static/img/bbox_img_{i+1}.png')
+		bbox_img.save('static/img/bbox_img_{}.png'.format(i+1))
 
 	data = {'current_pair':pair_idx,
 			'next_pair':next_idx,
@@ -271,11 +271,11 @@ def leaderboard():
 	for rank, result in enumerate(ranked_models):
 		rank_val = rank + 1
 		rank_dict = {}
-		name_key = f'model_name'
+		name_key = 'model_name'
 		rank_dict[name_key] = result['model']
-		vote_key = f'model_votes'
+		vote_key = 'model_votes'
 		rank_dict[vote_key] = result['votes']
-		match_key = f'model_matches'
+		match_key = 'model_matches'
 		rank_dict[match_key] = result['pos_votes']
 		data[rank_val] = rank_dict
 
