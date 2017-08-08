@@ -299,11 +299,6 @@ def leaderboard():
 '''One problem with always writing a new image to the same path
 (static/img/bbox_img_1.png, etc) is that the browser will serve
 up the cached page instead of the refreshed, randomized one.
-'''
-
-if __name__ == '__main__':
-	app.run(host='0.0.0.0')
-
 To fix this, this last decorator essentially disables caching
 after any request is made (max-age=0). This seemed slightly less hacky
 than appending some random hash after the url of the models page to ensure
@@ -316,3 +311,6 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
+if __name__ == '__main__':
+	app.run(host='0.0.0.0')
