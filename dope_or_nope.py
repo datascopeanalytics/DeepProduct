@@ -119,10 +119,11 @@ We then retrieve those images (and their bounding-box-drawn copies), put them in
 the data template, and pass the template on to be rendered
 '''
 @app.route('/models', defaults={'hash_str':None})
-@app.route('/models/<str:hash_str>')
-def models():
+@app.route('/models/<string:hash_str>')
+def models(hash_str):
 	if not hash_str:
 		hash_str = ''.join(random.choice('0123456789abcdef') for i in range(10))
+		return redirect(url_for('models', hash_str = hash_str))
 	AB_pairs = get_AB_testing_pairs()
 	served_pair = np.random.choice(AB_pairs,1).item().split()
 	pair_model = served_pair[0]
