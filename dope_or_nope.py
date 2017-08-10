@@ -125,7 +125,8 @@ def models(hash_str):
 		hash_str = ''.join(random.choice('0123456789abcdef') for i in range(10))
 		return redirect(url_for('models', hash_str = hash_str))
 	AB_pairs = get_AB_testing_pairs()
-	served_pair = np.random.choice(AB_pairs,1).item().split()
+	rand_idx = random.randint(0,len(AB_pairs))
+	served_pair = AB_pairs[rand_idx].split()
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
 	fname, fext = os.path.splitext(pair_img_1)
