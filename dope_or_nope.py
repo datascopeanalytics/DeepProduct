@@ -1,6 +1,7 @@
 import os
 import shutil
 import sqlite3
+import random
 import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
@@ -117,8 +118,11 @@ reference text file, choose a random row, split it into its constituent parts
 We then retrieve those images (and their bounding-box-drawn copies), put them in
 the data template, and pass the template on to be rendered
 '''
-@app.route('/models')
+@app.route('/models', defaults={'hash_str':None})
+@app.route('/models/<str:hash_str>')
 def models():
+	if not hash_str:
+		hash_str = ''.join(random.choice('0123456789abcdef') for i in range(10))
 	AB_pairs = get_AB_testing_pairs()
 	served_pair = np.random.choice(AB_pairs,1).item().split()
 	pair_model = served_pair[0]
