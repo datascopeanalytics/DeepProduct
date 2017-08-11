@@ -233,15 +233,14 @@ def leaderboard():
 	ranked_models = [row for row in db.execute(LEAD_QUERY).fetchall()]
 	data = {}
 	data['model_indices'] = [i+1 for i in range(len(ranked_models))]
+	data['total_votes'] = 0
 	for rank, result in enumerate(ranked_models):
 		rank_val = rank + 1
-		rank_dict = {}
-		name_key = 'model_name'
-		rank_dict[name_key] = result['model']
-		vote_key = 'model_votes'
-		rank_dict[vote_key] = result['votes']
-		match_key = 'model_matches'
-		rank_dict[match_key] = result['pos_votes']
+		rank_dict = {} 
+		rank_dict['model_name'] = result['model']
+		rank_dict['model_votes'] = result['votes']
+		rank_dict['model_matches'] = result['pos_votes']
+		data['total_votes'] += rank_dict['model_votes']
 		data[rank_val] = rank_dict
 
 	BEST_PAIR_QUERY = '''
@@ -258,6 +257,8 @@ def leaderboard():
 		data[1]['top_pair_1'] = result['pair_file_1']
 		data[1]['top_pair_2'] = result['pair_file_2']
 		data[1]['top_pair_approvals'] = result['pos_votes']
+
+
 
 	return render_template('leaderboard.html', data = data)
 
