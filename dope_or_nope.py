@@ -2,10 +2,9 @@ import os
 import shutil
 import sqlite3
 import random
-import numpy as np
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, flash, make_response
+	render_template, flash
 
 app = Flask(__name__)
 
@@ -96,13 +95,17 @@ def get_AB_testing_pairs():
 '''The home page populates from all_pairs.txt. Before doing so, though,
 it makes sure to choose randomly from text file rows that have four
 unique images in them
+
+Only thing to consider in using random.randint: it selects from [a,b]
+inclusive. So to use it as an index selector, you need to bound it
+with len-1 instead of by len
 '''
 @app.route('/')
 def home(n_jpgs = 4):
 	AB_pairs = [v.split() for v in get_AB_testing_pairs()]
 	four_img_lines = [v for v in AB_pairs if len(v) == 5]
 	four_uniq_lines = [v for v in four_img_lines if len(set(v[1:])) == 4]
-	chosen_idx = np.random.choice(np.arange(len(four_uniq_lines)),1).item()
+	chosen_idx = random.randint(0,len(four_uniq_lines)-1)
 	chosen_imgs = four_uniq_lines[chosen_idx][1:]
 	data = {}
 	for i, jpg in enumerate(chosen_imgs):
@@ -125,7 +128,7 @@ def models(hash_str):
 		hash_str = ''.join(random.choice('0123456789abcdef') for i in range(10))
 		return redirect(url_for('models', hash_str = hash_str))
 	AB_pairs = get_AB_testing_pairs()
-	rand_idx = random.randint(0,len(AB_pairs))
+	rand_idx = random.randint(0,len(AB_pairs)-1)
 	served_pair = AB_pairs[rand_idx].split()
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
