@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %}
+
+{% block main %}
+{{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 10px;'>
+      <h2 class="text-center">Try it out for yourself!</h2>
+    </div>
+  </div>
+<div id='loading'><img src='/static/img/loading.gif' /></div>
+<div id="content" class="row">
+  <div class="col-md-4 col-md-offset-2">
+    <h4>Upload new File</h4>
+      <form method=post enctype=multipart/form-data>
+        <input type=file name=file>
+        <input class="btn btn-default btn-sm" type=submit value=Upload onclick="loading();">
+      </form>
+  </div>
+</div>
+</div>
+
+{% endblock main %}

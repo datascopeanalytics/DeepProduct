@@ -2,25 +2,31 @@ import os
 import shutil
 import sqlite3
 import random
-
+import time
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-	render_template, flash
+	render_template, flash, send_from_directory
+from dsavision import DFModel
+
+
+# For uploading images
+from werkzeug.utils import secure_filename
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
 
 app.config.from_object(__name__) # get config settings from this file
 
 #######################	 CONFIG STUFF 	##################################
-'''DATABASE: This database stores the results of any person's left or 
-right swipes on various image pairs, along with any 
+'''DATABASE: This database stores the results of any person's left or
+right swipes on various image pairs, along with any
 
-DEEP_FASHION_IMAGES: assumes that any time we need to access a 
-particular image, we'll always just be looking in one of the many 
-subfolders is that directory. All image references can be passed in relative 
+DEEP_FASHION_IMAGES: assumes that any time we need to access a
+particular image, we'll always just be looking in one of the many
+subfolders is that directory. All image references can be passed in relative
 to this particular path
 
 DEMO_PAIRS: Quality controls for which pairs we view in what order for potentially
-showing parts of this to a client.  
+showing parts of this to a client.
  '''
 
 with app.open_resource('secret_key.txt','r') as f:
@@ -29,7 +35,8 @@ with app.open_resource('secret_key.txt','r') as f:
 new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': l337h4xx,
-			  'DEMO_PAIRS':[101,447,1445, 224, 922, 1296]
+			  'DEMO_PAIRS':[101,447,1445, 224, 922, 1296],
+			  'UPLOAD_FOLDER':'/Users/chris/Documents/deep-product/uploads',
 			  }
 app.config.update(new_config)
 
@@ -90,6 +97,10 @@ def get_AB_testing_pairs():
 			g.AB_testing_pairs = AB_pairs
 	return g.AB_testing_pairs
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 #######################	 END FILES AND IMAGES HELPER FUNCTIONS	###########
 
 '''The home page populates from all_pairs.txt. Before doing so, though,
@@ -115,7 +126,7 @@ def home(n_jpgs = 4):
 
 '''Assuming that we always want to route back to a random page in our A/B
 testing, this should work. Every time a request is made, we open up our
-reference text file, choose a random row, split it into its constituent parts 
+reference text file, choose a random row, split it into its constituent parts
 (first element = model, second element = first_image, third_element = second_image).
 
 We then retrieve those images (and their bounding-box-drawn copies), put them in
@@ -133,12 +144,12 @@ def models(hash_str):
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
 	fname, fext = os.path.splitext(pair_img_1)
-	pair_bbox_1 = '{}_bbox.png'.format(fname) 
-	
+	pair_bbox_1 = '{}_bbox.png'.format(fname)
+
 	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
 	fname, fext = os.path.splitext(pair_img_2)
 	pair_bbox_2 = '{}_bbox.png'.format(fname)
-	
+
 
 	data = {'model_served':pair_model,
 	        'image_1_path':'/'.join(pair_img_1.split('/')[1:]),
@@ -161,8 +172,8 @@ def demo(pair_idx):
 	pair_model = served_pair[0]
 	pair_img_1 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[1])
 	fname, fext = os.path.splitext(pair_img_1)
-	pair_bbox_1 = '{}_bbox.png'.format(fname) 
-	
+	pair_bbox_1 = '{}_bbox.png'.format(fname)
+
 	pair_img_2 = os.path.join(app.config['DEEP_FASHION_IMAGES'], served_pair[2])
 	fname, fext = os.path.splitext(pair_img_2)
 	pair_bbox_2 = '{}_bbox.png'.format(fname)
@@ -198,17 +209,17 @@ def judgement():
 		else:
 			flash("To that pair, you said nope!")
 			matching = 0
-			
+
 		db = get_db()
 		INSERT_QUERY = '''
 		INSERT INTO user_feedback
 		(pair_file_1, pair_file_2, model, user_vote, comment)
 		VALUES (?,?,?,?,?)
 		'''
-		INSERT_DATA = [request.form['image_1'], 
-			 		   request.form['image_2'], 
-			 		   request.form['model'], 
-			 		   matching, 
+		INSERT_DATA = [request.form['image_1'],
+			 		   request.form['image_2'],
+			 		   request.form['model'],
+			 		   matching,
 			 		   request.form['comment']]
 		db.execute(INSERT_QUERY,INSERT_DATA)
 		db.commit()
@@ -225,8 +236,8 @@ def leaderboard():
 	db = get_db()
 	LEAD_QUERY = '''
 	SELECT model, SUM(user_vote) AS pos_votes, COUNT(1) AS votes
-	FROM user_feedback 
-	GROUP BY model 
+	FROM user_feedback
+	GROUP BY model
 	ORDER BY pos_votes DESC
 	'''
 
@@ -236,7 +247,7 @@ def leaderboard():
 	data['total_votes'] = 0
 	for rank, result in enumerate(ranked_models):
 		rank_val = rank + 1
-		rank_dict = {} 
+		rank_dict = {}
 		rank_dict['model_name'] = result['model']
 		rank_dict['model_votes'] = result['votes']
 		rank_dict['model_matches'] = result['pos_votes']
@@ -261,6 +272,41 @@ def leaderboard():
 
 
 	return render_template('leaderboard.html', data = data)
+
+@app.route('/tryitout', methods=['GET', 'POST'])
+def tryitout():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and not allowed_file(file.filename):
+            flash("Sorry, you can't upload that type of file. Please upload a .png, .jpg, or .jpeg.")
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            print(str(filepath))
+            dfm = DFModel()
+            dfm.draw_k(str(filepath), 3)
+
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
+    return render_template('tryitout.html')
+
+from flask import send_from_directory
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 
 if __name__ == '__main__':
