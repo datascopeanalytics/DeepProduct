@@ -290,15 +290,20 @@ def tryitout():
             flash("Sorry, you can't upload that type of file. Please upload a .png, .jpg, or .jpeg.")
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            # Upload the file, then apply the model to it
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             print(str(filepath))
             dfm = DFModel()
-            dfm.draw_k(str(filepath), 3)
-
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            top_results = dfm.draw_k(str(filepath), 3)
+            print(top_results)
+            data = dict()
+            data[0] = str('uploads/' + filename)
+            for i, img in enumerate(top_results):
+                img_path = os.path.join(app.config['DEEP_FASHION_IMAGES'], img)
+                data[i+1] = '/'.join(img_path.split('/')[1:])
+            return render_template('results.html', data=data)
     return render_template('tryitout.html')
 
 from flask import send_from_directory

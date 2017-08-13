@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %}
+
+{% block main %}
+{{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px;'>
+      <h2 class="text-center">
+        <p>Results!</p>
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+  {% for key in data.keys() %}
+    {% if key == 0%}
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <img style='margin: auto; ' width=224px height=224px
+              class="thumbnail" src="{{ data[key] }}">
+              <caption>
+                Your image
+              </caption>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <img style='margin: auto; ' width=224px height=224px
+              class="thumbnail" src="{{ url_for('static', filename=data[key]) }}">
+              <caption>
+                Result {{ key }}
+              </caption>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+
+
+
+</div>
+{% endblock main %}

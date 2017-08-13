@@ -75,8 +75,12 @@ class DFModel(object):
 
 
         print("Top Matches")
+        tops = []
         for m in match[j:(j+k)]:
             print(self.image_df.iloc[m])
+            tops.append(self.image_df.iloc[m].loc['image_name'])
+
+        return tops
 
     def select_k(self, N,k,image_df,feature_matrix):
         img_index = np.random.randint(image_df.shape[0],size=N)
