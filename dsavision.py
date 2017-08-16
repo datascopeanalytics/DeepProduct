@@ -118,23 +118,6 @@ class MacOSFile(object):
                 pos += size
             return buffer
         return self.f.read(n)
-# #
-# # with open('Data/feature_matrix/fc6_full_set.p','rb') as f:
-# #     feat = pickle.load(MacOSFile(f))
-# # f = feat > 0
-# # from keras.models import load_model,Model
-# #
-# # start = time.time()
-# # full_trained = load_model('Data/Trained Models/DF-Category-FULL-retrain.h5')
-# # full_fc6 = Model(inputs=full_trained.input,outputs=full_trained.get_layer('fc1').output)
-# # print('{:.2f} s'.format(time.time()-start))
-# #
-# # bbox = pd.read_table('Data/DeepFashion/list_bbox.txt',sep='\s+')
-# # cat = pd.read_table('Data/DeepFashion/list_category_img.txt',sep='\s+')
-# #
-# # df = bbox.join(cat,lsuffix='_',rsuffix='')
-#
-# draw_k('images/shirt2.jpg',3,df,f,full_fc6)
 
 if __name__ == '__main__':
     print('nope')

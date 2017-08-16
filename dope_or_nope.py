@@ -7,6 +7,9 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 	render_template, flash, send_from_directory
 from dsavision import DFModel
 
+global dfm
+dfm = DFModel()
+
 # For uploading images
 from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -294,7 +297,6 @@ def tryitout():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             print(str(filepath))
-            dfm = DFModel()
             top_results = dfm.draw_k(str(filepath), 3)
             print(top_results)
             data = dict()
