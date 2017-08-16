@@ -7,7 +7,6 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 	render_template, flash, send_from_directory
 from dsavision import DFModel
 
-
 # For uploading images
 from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
