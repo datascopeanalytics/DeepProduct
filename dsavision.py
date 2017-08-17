@@ -40,7 +40,7 @@ class DFModel(object):
         return imagenet_utils.preprocess_input(image)
 
     def preprocess_file(self, file, inputShape=(224,224)):
-        image = PIL.Image.open(file)
+        image = PIL.Image.open(file).convert('RGB')
         image = image.resize(inputShape, PIL.Image.ANTIALIAS)
         image = img_to_array(image)
         image = np.expand_dims(image,axis=0)
