@@ -32,13 +32,15 @@ showing parts of this to a client.
  '''
 
 with app.open_resource('secret_key.txt','r') as f:
-	l337h4xx = f.readlines()[0]
+	foo = f.readlines()
+	l337h4xx = foo[0]
+	path_to_imgs = foo[1]
 
 new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
 			  'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
 			  'SECRET_KEY': l337h4xx,
 			  'DEMO_PAIRS':[101,447,1445, 224, 922, 1296],
-			  'UPLOAD_FOLDER':'/Users/chris/Documents/deep-product/uploads',
+			  'UPLOAD_FOLDER':path_to_imgs
 			  }
 app.config.update(new_config)
 
