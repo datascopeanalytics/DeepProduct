@@ -1,0 +1,44 @@
+{% extends "base.html" %} 
+{% block css %} 
+{{ super() }}
+{% endblock css %}
+
+{% block view_title %}{% endblock view_title %} 
+
+{% block main %} 
+{{ super() }}
+
+<div class="container">
+  <div class="row">
+    <div class="span" style='padding-bottom: 10px;'>
+      <h2 class="text-center">Top Pairs for the Model {{ model_id }}</h2>
+    </div>
+  </div>
+
+  {% for single_pair in top_pair_data %}
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=single_pair['pair_file_1'])}}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=single_pair['pair_file_2']) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+  {% endfor %}
+
+
+
+</div>
+
+{% endblock main %} 
