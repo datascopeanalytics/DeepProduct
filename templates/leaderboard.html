@@ -67,11 +67,15 @@
     data: { 
     labels: ['Dope', 'Nope'], 
     datasets: [{ 
-    label: "", 
-    data: [modelRow.data('dopes'),modelRow.data('nopes')]}], 
-    backgroundColor: "rgba(153,255,51,0.4)" 
+      data: [modelRow.data('dopes'),modelRow.data('nopes')],
+      backgroundColor: ['rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)']
+    }]
     },
     options:{
+      legend: {
+        display: false
+      },
       scales: {
         yAxes: [{
           ticks: {beginAtZero: true}
