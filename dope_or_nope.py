@@ -27,10 +27,39 @@ with app.open_resource('secret_key.txt','r') as f:
         l337h4xx = f.readlines()[0]
 
 new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
-                          'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
-                          'SECRET_KEY': l337h4xx,
-                          'DEMO_PAIRS':[101,447,1445, 224, 922, 1296]
-                          }
+              'DEEP_FASHION_IMAGES': 'static/to_dropbox/DeepFashion/',
+              'SECRET_KEY': l337h4xx,
+              'DEMO_PAIRS':[101,447,1445, 224, 922, 1296],
+              'MODEL_DESCRIPS':{
+                  'FC6BH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>B:</b> trained on basic ImageNet classes</p>
+                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC6FL2':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
+                  <p><b>L2:</b> measuring nearest neighbors with L2 Distance</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC6FH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
+                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC6SL2':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>S:</b> retrained on a subset of the DeepFashion data set</p>
+                  <p><b>L2:</b> measuring nearest neighbors with L2 Distance</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC6FLSH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
+                  <p><b>LSH:</b> measuring nearest neighbors with Locality-Sensitive Hashing</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC7BH':'''<p><b>FC7:</b> The seventh fully connected layer of VGG16</p>
+                  <p><b>B:</b> trained on basic ImageNet classes</p>
+                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+                  'FC6MIH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
+                  <p><b>MIH:</b> measuring nearest neighbors with Multi-Index Hashing</p>
+                  <p>Click to see the top voted pairs of this model </p>''',
+              }
+              }
 app.config.update(new_config)
 
 '''Silent will ignore this if FLASKR_SETTINGS is not present'''
@@ -238,6 +267,7 @@ def leaderboard():
                 rank_val = rank + 1
                 rank_dict = {}
                 rank_dict['model_name'] = result['model']
+                rank_dict['tooltip_text'] = app.config['MODEL_DESCRIPS'][result['model']]
                 rank_dict['model_votes'] = result['votes']
                 rank_dict['model_matches'] = result['pos_votes']
                 data['total_votes'] += rank_dict['model_votes']
