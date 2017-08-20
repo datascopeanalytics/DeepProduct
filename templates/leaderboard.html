@@ -29,18 +29,20 @@
 					  data-rate="{{data[i]['model_matches']*100.0/data[i]['model_votes']}}"
 					  data-numvotes="9"
 					  title="Click to see top matched pairs for this model">{{ "{}".format(data[i]['model_name']) }}</a></h3>
+      
+      <canvas id="approval-chart-{{i}}"></canvas>
       </div>
 
-      <!-- </canvas><canvas id="approval-chart-{{i}}"></canvas> -->
       
-      <div class="col-md-4">
+      
+      <!-- <div class="col-md-4">
         <h3 class="text-center">{{ "Approval Rate: {:.1f} percent".format(data[i]['model_matches']*100.0/data[i]['model_votes']) }}</h3>
       </div>
    
       <div class="col-md-4">
         <h3 class="text-center">{{ "Approved {} Times".format(data[i]['model_matches']) }}</h3>
       </div>
-    </div>
+    </div> -->
   {% endfor %}
 
 
@@ -54,22 +56,22 @@
   })
 
 
-  <!-- $("a.model-link").each(drawModelChart); -->
+  $("a.model-link").each(drawModelChart);
   
-  <!-- function drawModelChart(modelLinkElement){ -->
-  <!--   var rowNo = $(this).data("row-no"); -->
-  <!--   var modelRow = $('#model-link-'+rowNo); -->
-  <!--   var ctx = document.getElementById('approval-chart-'+rowNo).getContext('2d'); -->
-  <!--   var myChart = new Chart(ctx, { -->
-  <!--     type: 'bar', -->
-  <!--     data: { -->
-  <!--     labels: ['Dope', 'Nope'], -->
-  <!--     datasets: [{ -->
-  <!--     label: "", -->
-  <!--     data: [modelRow.data('rate'),modelRow.data('numvotes')]}], -->
-  <!--     backgroundColor: "rgba(153,255,51,0.4)" -->
-  <!--   }}); -->
-  <!-- } -->
+  function drawModelChart(modelLinkElement){ 
+  var rowNo = $(this).data("row-no"); 
+  var modelRow = $('#model-link-'+rowNo); 
+  var ctx = document.getElementById('approval-chart-'+rowNo).getContext('2d'); 
+  var myChart = new Chart(ctx, { 
+    type: 'bar', 
+    data: { 
+    labels: ['Dope', 'Nope'], 
+    datasets: [{ 
+    label: "", 
+    data: [modelRow.data('rate'),modelRow.data('numvotes')]}], 
+    backgroundColor: "rgba(153,255,51,0.4)" 
+    }}); 
+   } 
 
 </script>
 
