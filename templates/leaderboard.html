@@ -28,7 +28,7 @@
 					  data-placement="right"
 					  data-dopes="{{ data[i]['model_matches'] }}"
 					  data-nopes="{{ data[i]['model_votes'] - data[i]['model_matches'] }}"
-					  title="Click to see top matched pairs for this model">{{ "{}".format(data[i]['model_name']) }}</a></h3>
+					  title="{{ data[i]['tooltip_text'] }}">{{ "{}".format(data[i]['model_name']) }}</a></h3>
       
       <canvas id="approval-chart-{{i}}"></canvas>
       </div>
@@ -52,7 +52,7 @@
 <script type='text/javascript'>
 
   $(function(){
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip({html:true})
   })
 
 
