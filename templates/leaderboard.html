@@ -26,8 +26,8 @@
 					  data-row-no="{{i}}"
 					  data-toggle="tooltip"
 					  data-placement="right"
-					  data-rate="{{data[i]['model_matches']*100.0/data[i]['model_votes']}}"
-					  data-numvotes="9"
+					  data-dopes="{{ data[i]['model_matches'] }}"
+					  data-nopes="{{ data[i]['model_votes'] - data[i]['model_matches'] }}"
 					  title="Click to see top matched pairs for this model">{{ "{}".format(data[i]['model_name']) }}</a></h3>
       
       <canvas id="approval-chart-{{i}}"></canvas>
@@ -68,10 +68,19 @@
     labels: ['Dope', 'Nope'], 
     datasets: [{ 
     label: "", 
-    data: [modelRow.data('rate'),modelRow.data('numvotes')]}], 
+    data: [modelRow.data('dopes'),modelRow.data('nopes')]}], 
     backgroundColor: "rgba(153,255,51,0.4)" 
-    }}); 
-   } 
+    },
+    options:{
+      scales: {
+        yAxes: [{
+          ticks: {beginAtZero: true}
+        }]
+      }
+    }
+  }
+  ); 
+  } 
 
 </script>
 
