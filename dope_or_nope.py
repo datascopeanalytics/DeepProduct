@@ -21,6 +21,11 @@ to this particular path
 
 DEMO_PAIRS: Quality controls for which pairs we view in what order for potentially
 showing parts of this to a client.
+
+MODEL_DESCRIPS: This is a dictionary keyed with the seven possible models in
+all_pairs.txt. The values are long, ugly HTML strings that populate the tooltips
+on the leaderboard page and describe each model. I haven't decided whether or not
+the links within these tooltips are worth preserving.
  '''
 
 with app.open_resource('secret_key.txt','r') as f:
@@ -31,32 +36,72 @@ new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
               'SECRET_KEY': l337h4xx,
               'DEMO_PAIRS':[101,447,1445, 224, 922, 1296],
               'MODEL_DESCRIPS':{
-                  'FC6BH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>B:</b> trained on basic ImageNet classes</p>
-                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  'FC6BH':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>B:</b> trained on basic <a 
+                  href='http://image-net.org/challenges/LSVRC/2017/index#introduction'
+                  >ImageNet</a> classes</p>
+                  <p><b>H:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Hamming_distance'
+                  >Hamming Distance</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC6FL2':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
-                  <p><b>L2:</b> measuring nearest neighbors with L2 Distance</p>
+                  'FC6FL2':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>F:</b> retrained on the full <a
+                  href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
+                  >DeepFashion</a> data set</p>
+                  <p><b>L2:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Euclidean_distance'
+                  >L2 Distance</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC6FH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
-                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  'FC6FH':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>F:</b> retrained on the full <a
+                  href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
+                  >DeepFashion</a> data set</p>
+                  <p><b>H:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Hamming_distance'
+                  >Hamming Distance</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC6SL2':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>S:</b> retrained on a subset of the DeepFashion data set</p>
-                  <p><b>L2:</b> measuring nearest neighbors with L2 Distance</p>
+                  'FC6SL2':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>S:</b> retrained on a subset of the <a
+                  href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
+                  >DeepFashion</a> data set</p>
+                  <p><b>L2:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Euclidean_distance'
+                  >L2 Distance</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC6FLSH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>F:</b> retrained on the full DeepFashion data set</p>
-                  <p><b>LSH:</b> measuring nearest neighbors with Locality-Sensitive Hashing</p>
+                  'FC6FLSH':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>F:</b> retrained on the full <a
+                  href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
+                  >DeepFashion</a> data set</p>
+                  <p><b>LSH:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Locality-sensitive_hashing'
+                  >Locality-Sensitive Hashing</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC7BH':'''<p><b>FC7:</b> The seventh fully connected layer of VGG16</p>
-                  <p><b>B:</b> trained on basic ImageNet classes</p>
-                  <p><b>H:</b> measuring nearest neighbors with Hamming Distance</p>
+                  'FC7BH':'''<p><b>FC6:</b> The seventh fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>B:</b> trained on basic <a 
+                  href='http://image-net.org/challenges/LSVRC/2017/index#introduction'
+                  >ImageNet</a> classes</p>
+                  <p><b>H:</b> measuring nearest neighbors with <a
+                  href='https://en.wikipedia.org/wiki/Hamming_distance'
+                  >Hamming Distance</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
-                  'FC6MIH':'''<p><b>FC6:</b> The sixth fully connected layer of VGG16</p>
-                  <p><b>MIH:</b> measuring nearest neighbors with Multi-Index Hashing</p>
+                  'FC6MIH':'''<p><b>FC6:</b> The sixth fully connected layer of the <a 
+                  href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
+                  architecture</p>
+                  <p><b>MIH:</b> measuring nearest neighbors with <a
+                  href='https://www.cs.toronto.edu/~norouzi/research/papers/multi_index_hashing.pdf'
+                  >Multi-Index Hashing</a></p>
                   <p>Click to see the top voted pairs of this model </p>''',
               }
               }
