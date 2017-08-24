@@ -64,7 +64,7 @@
   var modelRow = $('#model-link-'+rowNo); 
   var ctx = document.getElementById('approval-chart-'+rowNo).getContext('2d'); 
   var myChart = new Chart(ctx, { 
-    type: 'bar', 
+    type: 'horizontalBar', 
     data: { 
     labels: ['Dope', 'Nope'], 
     datasets: [{ 
@@ -82,7 +82,7 @@
         text: modelRow.data('rate')
       },
       scales: {
-        yAxes: [{
+        xAxes: [{
           ticks: {
             beginAtZero: true
           },
