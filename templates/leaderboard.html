@@ -68,12 +68,16 @@
   var myChart = new Chart(ctx, { 
     type: 'horizontalBar', 
     data: { 
-    labels: ['Dope', 'Nope'], 
-    datasets: [{ 
-      data: [modelRow.data('dopes'),modelRow.data('nopes')],
-      backgroundColor: ['rgba(153, 102, 255, 0.5)',
-                'rgba(255, 159, 64, 0.5)']
-    }]
+    labels: ['Votes'], 
+    datasets: [
+      { 
+      data: [modelRow.data('dopes')],
+      backgroundColor: ['rgba(153, 102, 255, 0.5)']       
+      },
+      { 
+      data: [modelRow.data('nopes')],
+      backgroundColor: ['rgba(255, 159, 64, 0.5)']       
+      }]
     },
     options:{
       legend: {
@@ -91,8 +95,10 @@
           scaleLabel:{
             display: true,
             labelString: 'Votes'
-          }
-        }]
+          },
+          stacked:true
+        }],
+        yAxes: [{stacked:true}]
       }
     }
   }
