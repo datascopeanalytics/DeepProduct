@@ -180,8 +180,10 @@ def get_AB_testing_pairs():
 #######################  END FILES AND IMAGES HELPER FUNCTIONS  ###########
 
 '''The home page populates from all_pairs.txt. Before doing so, though,
-it makes sure to choose randomly from text file rows that have four
-unique images in them
+it makes sure to choose randomly from text file rows that 
+
+A) Have four unique images in them and
+B) Were determined to fit "prettily" into the 224 X 224 image resolution
 
 Only thing to consider in using random.randint: it selects from [a,b]
 inclusive. So to use it as an index selector, you need to bound it
@@ -192,7 +194,10 @@ def home(n_jpgs = 4):
         AB_pairs = [v.split() for v in get_AB_testing_pairs()]
         four_img_lines = [v for v in AB_pairs if len(v) == 5]
         four_uniq_lines = [v for v in four_img_lines if len(set(v[1:])) == 4]
-        chosen_idx = random.randint(0,len(four_uniq_lines)-1)
+        pretty_pair_indices = [894,1103,779,725,1375,663,1836,264,\
+                               890,564,1933,1068,1180]
+        chosen_idx = random.randint(0,len(pretty_pair_indices) - 1)
+        chosen_idx = pretty_pair_indices[chosen_idx]
         chosen_imgs = four_uniq_lines[chosen_idx][1:]
         data = {}
         for i, jpg in enumerate(chosen_imgs):
