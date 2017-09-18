@@ -3,6 +3,7 @@
 This story, like all great stories, begins with a light fixture. In particular, this light fixture:
 
 ![Chris's Light](blog_images/light_chris.png)
+*Chris's idea of [a light that never goes out](https://www.youtube.com/watch?v=4WPZMhFa84U)*
 
 Datascope intern, Chris, spotted this light fixture while out at lunch one day and was immediately transfixed by its glowing, orthogonal orbiness. In an attempt to find where he could buy his own wonderful light fixture, he took a picture with his camera and used [Google Reverse Image Search](https://images.google.com/) to find places that might have the product online. However, while Google was able to show him lots of pictures of light fixtures, it wasn't able to show him the exact product he was looking for. This is partially because Google Reverse Image Search is designed to find similar **pictures** and not similar **items**.
 
@@ -27,6 +28,7 @@ With the data set selected, we need to actually build our visual product search 
 The core concept behind this method of visual search relies on using the intermediate results of a pre-trained CNN as a feature vector and finding products with features that are nearby to the input vector. The logic behind this is that a CNN trained at visual classification typically has two sections: a series of convolutional layers trained at extracting meaningful visual information from the input image and a series of dense layers trained at performing the classification task. Using the output of the convolutional layers to represent images allows us to perform comparisons in a vector space that corresponds to visual attributes as opposed to semantic attributes (i.e. the predicted image category). Instead of answering the question "Is this a chair?", we can answer the question, "Does this image have similar color/pattern/shading as another image?"
 
 ![Sketch of layers with notes](blog_images/model_sketch.jpg)
+*Sketch of the VGG-16 architecture*
 
 For this task, we decided to use the [VGG-16](http://www.robots.ox.ac.uk/~vgg/research/very_deep/) network because of its strong performance at visual classification without having to use networks with more complicated structures such as [Inception](https://github.com/google/inception) or [ResNet](https://github.com/KaimingHe/deep-residual-networks)
 
