@@ -116,13 +116,13 @@ While this lets us quickly evaluate the performance of our models using the exis
 
 Having our CNNs do a bunch of math to find pairs of neighboring images is all well and good for machine learning contests, but it doesn’t necessarily tell us how well our models work *for people.* In this case, which of our variations on visual search does the best job at helping people find similar items?
 
-When finding matching clothes, “similarity” means different things to different people for different reasons. Faced with a subjective problem like this, one way to evaluate which of our models provides[the greatest amount of good to the greatest number of people](https://plato.stanford.edu/entries/utilitarianism-history/) is to put them head-to-head in a blind test. To get a better sense of how our visual search algorithms work from a human-centered perspective, we built a little website that lets our users vote and decide for us!
+When finding matching clothes, “similarity” means different things to different people for different reasons. Faced with a subjective problem like this, one way to evaluate which of our models provides [the greatest amount of good to the greatest number of people](https://plato.stanford.edu/entries/utilitarianism-history/) is to put them head-to-head in a blind test. To get a better sense of how our visual search algorithms work from a human-centered perspective, we built a little website that lets our users vote and decide for us!
 
 If you head on over to [Dope or Nope? by Datascope](https://dopeornope.datascopeanalytics.com) and click on “Play Dope or Nope,” you can participate too! You’ll cycle through random pairs of items that one of seven visual search networks determined to be “nearest neighbors.” If you like the match, swipe right. Otherwise, swipe left. Simple and fun, no? Setting up little games like this is a good way to get quick feedback from the people that matter the most: your users.
 
 Speaking of feedback, we also built in a leaderboard to see how the models stack up against each other. A bunch of Datascopers have voted over the past few days, and here’s how things stand as of press time
 
-TKTK Screencap Leaderboard after Datascopers have voted on 
+![Take me to your Leader](blog_images/leaderboard.png)
 
 Some thoughts on the results so far: most of the models have a similar performance, hovering somewhere in the 40-45% approval rating, with one model standing above the pack with a ~64% approval rating. This is a model that was retrained on the deep fashion set, uses the FC6 layer features and finds the nearest neighbors using the Hamming distance. This result is consistent with the findings of the Pinterest paper we based our model on. However, it is hard to know ahead of time which particular combination of features will perform best on your problem, and I think this is a good example of why you should try lots of models and iterate quickly. Moreover, this is only what *we’ve* seen so far, and we’re excited for you to be part of the process. [Are our networks totally dope? Or do they just make you want to say “...nope?”](https://dopeornope.datascopeanalytics.com) 
 
