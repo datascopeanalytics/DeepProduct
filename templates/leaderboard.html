@@ -18,99 +18,48 @@
 
   {% for i in data['model_indices'] %}
 
-    <div class="row" style='padding-bottom: 10px'>
+    <div class="row">
       <div class="col-md-4">
-        <h3 class="text-left">{{i}}. <a id="model-link-{{i}}"
-					  class="model-link"
-					  href="{{url_for('pair_leaderboard_for_a_model', model_id=data[i]['model_name'])}}"
-					  data-row-no="{{i}}"
-					  data-toggle="tooltip"
-					  data-placement="right"
-					  data-dopes="{{ data[i]['model_matches'] }}"
-					  data-nopes="{{ data[i]['model_votes'] - data[i]['model_matches'] }}"
-            data-votes="{{ data[i]['model_votes'] }}"
-            data-rate="{{ 'Approval Rate: {:.1f}%'.format(data[i]['model_matches']*100.0/data[i]['model_votes']) }}"
-            data-md-name="{{ data[i]['model_name'] }}"
-					  title="Click to see this model's top-voted pairs">{{ "{}".format(data[i]['model_name']) }}</a>
-            <p style='font-size: 16; text-align: left; padding-top: 5px;'> {{ data[i]['tooltip_text']['layer'] | safe }} </p>
-            <p style='font-size: 16; text-align: left;'> {{ data[i]['tooltip_text']['dsource'] | safe }} </p>
-            <p style='font-size: 16; text-align: left;'> {{ data[i]['tooltip_text']['metric'] | safe }} </p>
-            </h3>
+        <h3 class="text-center">{{ "{}. {}".format(i, data[i]['model_name']) }}</h3>
       </div>
-      <div class="col-md-8">
-        <canvas id="approval-chart-{{i}}" height='80' style='height: 80px;'></canvas>
+
+      <div class="col-md-4">
+        <h3 class="text-center">{{ "Approval Rate: {:.1f} percent".format(data[i]['model_matches']*100.0/data[i]['model_votes']) }}</h3>
+      </div>
+   
+      <div class="col-md-4">
+        <h3 class="text-center">{{ "Approved {} Times".format(data[i]['model_matches']) }}</h3>
+      </div> 
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="span" style='padding-bottom: 30px; padding-top: 30px; '>
+      <p style='text-align: center; font-weight: 500; font-size: 18'>{{ "Top Ranked Pair from {} (Approved {} Times)".format(data[1]['model_name'], data[1]['top_pair_approvals']) }} </p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data[1]['top_pair_1']) }}">
+        </div>
       </div>
     </div>
 
-  {% endfor %}
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <img width=300px height=300px style='margin: auto' class="thumbnail" src="{{ url_for('static', filename=data[1]['top_pair_2']) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
 
 
 </div>
-
-
-<script type='text/javascript'>
-
-//activates bootstrap tooltips for the entire page
-  $(function(){
-  $('[data-toggle="tooltip"]').tooltip()
-  })
-
-/*sets a global variable xLimit to ensure that all horizontal
-bar graphs have the same axis limits. This will always be the 
-maximum number of votes (across all seven of our models)
-rounded up to the nearest 10
-*/  
-  var voteCounts = $("a.model-link").map(function()
-    {return Number($(this).data('votes'))});
-  var xLimit = Math.max.apply(Math, voteCounts);
-  var xLimit = Math.ceil(xLimit / 10) * 10;
-
-/*creates all of the model charts according to the
-data attributes in each of the model-link objects.
-*/
-  $("a.model-link").each(drawModelChart);
-  
-  function drawModelChart(modelLinkElement){ 
-    var rowNo = $(this).data("row-no"); 
-    var modelRow = $('#model-link-'+rowNo); 
-    var ctx = document.getElementById('approval-chart-'+rowNo).getContext('2d');
-    var myChart = new Chart(ctx, { 
-      type: 'horizontalBar', 
-      data: { labels: [''], 
-      datasets: [
-        { data: [modelRow.data('dopes')],
-        backgroundColor: ['rgba(153, 102, 255, 0.5)'],
-        label: ['Dopes']         
-        },
-        { data: [modelRow.data('nopes')],
-        backgroundColor: ['rgba(255, 159, 64, 0.5)'],
-        label: ['Nopes']       
-        }]
-      },
-      options:{
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          text: modelRow.data('md-name') + ' '+ modelRow.data('rate')
-        },
-        scales: {
-          xAxes: [{
-            ticks: {
-              beginAtZero: true,
-              max: xLimit
-            },
-            stacked:true
-          }],
-          yAxes: [{stacked:true}]
-        }
-      }
-    }
-    ); 
-  } 
-
-</script>
-
 
 {% endblock main %} 
