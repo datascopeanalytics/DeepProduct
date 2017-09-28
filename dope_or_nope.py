@@ -87,10 +87,11 @@ new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
                       <b>F:</b> retrained on the full <a
                       href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
                       >DeepFashion</a> data set''',
-                      'metric':'''<b>LSH:</b> measuring nearest neighbors with <a
+                      'metric':'''<b>LSH:</b> searching for neighbors with <a
                       href='https://en.wikipedia.org/wiki/Locality-sensitive_hashing'
-                      >Locality-Sensitive Hashing</a>
-                      '''
+                      >Locality-Sensitive Hashing</a>, measuring neighbors with <a
+                      href='https://en.wikipedia.org/wiki/Euclidean_distance'
+                      >L2 Distance</a>'''
                       },
                   'FC7BH':{
                       'layer':'''<b>FC6:</b> The seventh fully connected layer of the <a 
@@ -109,12 +110,16 @@ new_config = {'DATABASE': os.path.join(app.root_path, 'dope_nope.db'),
                   'FC6MIH':{
                       'layer':'''<b>FC6:</b> The sixth fully connected layer of the <a 
                       href='http://www.robots.ox.ac.uk/~vgg/research/very_deep/'>VGG16</a>  
-                      network''',
+                      network, retrained on the full <a
+                      href='http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html'
+                      >DeepFashion</a> data set''',
                       'dsource':'',
                       'metric':'''
-                      <b>MIH:</b> measuring nearest neighbors with <a
+                      <b>MIH:</b> searching for neighbors with <a
                       href='https://www.cs.toronto.edu/~norouzi/research/papers/multi_index_hashing.pdf'
-                      >Multi-Index Hashing</a>'''
+                      >Multi-Index Hashing</a>, measuring neighbors with <a
+                      href='https://en.wikipedia.org/wiki/Hamming_distance'
+                      >Hamming Distance</a>'''
                       }
                   }
               }
